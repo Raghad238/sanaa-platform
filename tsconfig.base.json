@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@sanaa-platform/*": ["packages/*/src/index.ts"],
+      "@sanaa-platform/config": ["packages/config/src/index.ts"],
+      "@sanaa-platform/types": ["packages/types/src/index.ts"],
+      "@sanaa-platform/validation": ["packages/validation/src/index.ts"],
+      "@sanaa-platform/database": ["packages/database/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".next", "coverage"]
+}

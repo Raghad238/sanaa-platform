@@ -1,0 +1,13 @@
+{
+  "name": "@sanaa-platform/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"web app dev placeholder\"",
+    "build": "echo \"web app build placeholder\"",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

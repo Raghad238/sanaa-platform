@@ -1,0 +1,30 @@
+{
+    "name": "sanaa-platform",
+    "private": true,
+    "version": "0.1.0",
+    "packageManager": "pnpm@9.12.3",
+    "engines": {
+        "node": ">=20.11.0",
+        "pnpm": ">=9.0.0"
+    },
+    "scripts": {
+        "dev": "pnpm -r --parallel dev",
+        "build": "pnpm -r --parallel build",
+        "lint": "pnpm -r --parallel lint",
+        "typecheck": "pnpm -r --parallel typecheck",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.17.0",
+        "@typescript-eslint/parser": "^8.17.0",
+        "eslint": "^9.16.0",
+        "eslint-config-prettier": "^10.0.0",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-n": "^17.0.0",
+        "eslint-plugin-promise": "^7.0.0",
+        "prettier": "^3.3.1",
+        "typescript": "^5.7.2"
+    }
+}

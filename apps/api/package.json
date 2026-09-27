@@ -1,0 +1,13 @@
+{
+  "name": "@sanaa-platform/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"api app dev placeholder\"",
+    "build": "echo \"api app build placeholder\"",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

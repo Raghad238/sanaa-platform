@@ -1,0 +1,13 @@
+{
+  "name": "@sanaa-platform/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"admin app dev placeholder\"",
+    "build": "echo \"admin app build placeholder\"",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
