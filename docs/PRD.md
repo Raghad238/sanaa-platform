@@ -1,4 +1,5 @@
 # Product Requirements Document (PRD)
+
 # Sana'a Marketplace
 
 ## 1. Product Overview
@@ -52,6 +53,7 @@ To become Sana'a’s trusted, searchable, and accessible local marketplace for p
 ## 5. Goals
 
 ### Business Goals
+
 - Create a reliable local marketplace for Sana'a, Yemen.
 - Increase seller visibility and customer discovery.
 - Support a frictionless browsing and search experience for local products and services.
@@ -60,11 +62,13 @@ To become Sana'a’s trusted, searchable, and accessible local marketplace for p
 - Provide an operational moderation and audit framework for administrators.
 
 ### User Goals
+
 - Customers can quickly discover local products, services, and stores.
 - Sellers can manage their store and listings from a centralized dashboard.
 - Admins can moderate listings, manage subscriptions, and handle reports and reviews.
 
 ### Product Goals
+
 - Ship a focused MVP for Sana'a only.
 - Support dynamic categories and flexible geographic expansion later.
 - Keep public pages SEO-friendly and indexable where appropriate.
@@ -91,11 +95,13 @@ The following are explicitly out of scope for the Day 1 PRD and the MVP phase:
 ## 7. Target Market
 
 ### Primary Market
+
 - Customers in Sana'a seeking local products and services.
 - Small and medium-sized sellers operating locally in Sana'a.
 - Service providers who currently rely on social media or messaging channels.
 
 ### Secondary Market
+
 - Sellers outside the initial city who may expand into the platform later.
 - Admins and moderators whose job is to maintain quality and policy compliance.
 
@@ -104,9 +110,11 @@ The following are explicitly out of scope for the Day 1 PRD and the MVP phase:
 ## 8. Personas
 
 ### 8.1 Customer Persona
+
 A customer is a person in Sana'a who wants to discover local stores, products, or services quickly and contact sellers directly. The customer may or may not create an account depending on the feature set. Customers want convenience, trust, and speed in finding relevant local offerings.
 
 Needs:
+
 - Discover stores and listings without login.
 - Search by category, store, name, or keyword.
 - Compare product or service offers.
@@ -115,9 +123,11 @@ Needs:
 - Submit reports or leave reviews if eligible and authenticated.
 
 ### 8.2 Seller Persona
+
 A seller is a business or independent service provider operating in Sana'a. They may already sell through social media or messaging apps and want a better organized online storefront. Sellers need to manage inventory, services, store profiles, and contact information.
 
 Needs:
+
 - Create and manage a store profile.
 - Add and update products and services.
 - Manage contact channels and store information.
@@ -126,9 +136,11 @@ Needs:
 - Maintain visibility in public discovery where allowed by plan or policy.
 
 ### 8.3 Admin Persona
+
 An administrator monitors platform quality, content moderation, categories, subscriptions, notifications, user activity, and operational health. They must be able to intervene when stores, products, services, reports, or reviews require action.
 
 Needs:
+
 - Manage users, sellers, stores, products, and services.
 - Moderate categories, reports, and reviews.
 - Review subscription and payment records.
@@ -159,6 +171,7 @@ See Section 8.3. The admin persona oversees platform quality, compliance, and bu
 ## 12. User Journeys
 
 ### 12.1 Customer Journey
+
 1. Customer opens public marketplace homepage.
 2. Customer browses categories, offers, nearby stores, popular products, or services.
 3. Customer searches by keyword, category, or store name.
@@ -168,6 +181,7 @@ See Section 8.3. The admin persona oversees platform quality, compliance, and bu
 7. If logged in, customer may save favorites, report concerns, or leave a review if eligible.
 
 ### 12.2 Seller Journey
+
 1. Seller creates account and signs in.
 2. Seller creates a store profile.
 3. Store becomes active immediately and is visible in the public marketplace, subject to subscription/trial rules and later moderation.
@@ -178,6 +192,7 @@ See Section 8.3. The admin persona oversees platform quality, compliance, and bu
 8. Seller updates inventory or store details as needed.
 
 ### 12.3 Admin Journey
+
 1. Admin logs in to admin dashboard.
 2. Admin reviews new store creation notifications.
 3. Admin reviews and manages users, stores, products, services, reports, reviews, subscriptions, and categories.
@@ -208,26 +223,31 @@ Detailed admin journey: operational review → moderation decisions → communic
 ## 16. Functional Requirements
 
 ### Authentication
+
 - Public marketplace browsing must not require an account.
 - Authentication is required for account-bound features such as favorites, reviews, reports, personal notifications, and seller/admin access.
 - The product requires separate user roles for customer, seller, and admin.
 - The product must support secure session management and role-based access controls.
 
 ### Customer Accounts
+
 - Customers may browse without an account.
 - Customers may create an account for personalized behavior.
 - Customers must be able to manage favorites, profile settings, and account-linked actions.
 
 ### Seller Accounts
+
 - Sellers require an account to create and manage stores, products, and services.
 - Sellers can manage store profile details, contact channels, products, services, and subscription information.
 - Sellers receive notifications and admin notes.
 
 ### Admin Accounts
+
 - Admins require an account and elevated permissions.
 - Admins manage users, sellers, stores, products, services, categories, locations, reports, reviews, notifications, subscriptions, payment records, moderation, and audit information.
 
 ### Stores
+
 - Sellers can create one or more stores according to business rules.
 - Store status becomes ACTIVE immediately when created.
 - No admin pre-approval workflow is required.
@@ -236,6 +256,7 @@ Detailed admin journey: operational review → moderation decisions → communic
 - Store content can become hidden when subscription expires.
 
 ### Products
+
 - Sellers can create product listings.
 - Product becomes ACTIVE immediately when created.
 - No admin pre-approval workflow is required.
@@ -244,60 +265,72 @@ Detailed admin journey: operational review → moderation decisions → communic
 - Product visibility must be consistent with the supporting store’s subscription status and moderation state.
 
 ### Services
+
 - Sellers can create service listings.
 - Service becomes ACTIVE immediately when created.
 - No admin pre-approval workflow is required.
 - Admins can later moderate, suspend, remove, or reactivate services as required.
 
 ### Categories
+
 - Categories are dynamic and managed by admins.
 - Categories must not be assumed to be hardcoded.
 - Listings should be categorized dynamically according to admin-managed taxonomy.
 
 ### Locations
+
 - The initial MVP targets Sana'a only.
 - The architecture must allow future expansion beyond Sana'a.
 - Location data must support local-only product discovery in the MVP.
 
 ### Search
+
 - Public users and authenticated users must be able to search by product, service, store, keyword, category, and offer.
 - Search results should support relevant ordering and ranking without automatically privileging paid subscription listings.
 
 ### Discover
+
 - Discover experiences should support categories such as All, Products, Services, Stores, Offers, New, Popular, and Nearby.
 - Ranking must not automatically favor paid subscriptions.
 - Discovery is part of the public marketplace experience.
 
 ### Offers
+
 - Sellers may publish promotional offers relevant to products or services.
 - Offers should be discoverable through public marketplace surfaces.
 - Offer visibility must reflect moderation and subscription rules.
 
 ### Favorites
+
 - Logged-in customers can save favorites for products, services, or stores.
 - Favorites are account-bound and require user identity.
 
 ### Reviews
+
 - Reviews are based on a Contact Event, not Verified Purchase.
 - Review eligibility is determined by future business rules tied to customer contact with the seller.
 - The review system supports customer feedback and moderation guidance.
 
 ### Reports
+
 - Customers and admins may be able to submit reports related to suspicious, inaccurate, or inappropriate content.
 - Report workflows must support review and moderation actions.
 
 ### Notifications
+
 - Users receive relevant notifications when applicable.
 - Sellers receive store creation and subscription-trial notifications.
 - Admins receive alerts for created stores and products.
 - Notifications should support account-related operational updates.
 
 ### Contact Tracking
+
 - The platform must support tracking of customer contact events with sellers.
 - Contact tracking is a key input for future review eligibility.
 - Seller contact channels are managed independently and used for customer contact outside the platform.
 
 ### Subscription
+
 - Subscription plans, subscription records, and payment records should be supported in database design from early stages.
 - Subscription values are not hardcoded in business logic and must eventually come from the database.
 - Current plan pricing is 2500 YER monthly.
@@ -305,6 +338,7 @@ Detailed admin journey: operational review → moderation decisions → communic
 - Subscription expiration must hide public listing visibility rather than delete seller data.
 
 ### Trial
+
 - Sellers receive a 60-day free trial.
 - Trial begins when the store becomes active.
 - Trial details must be configurable in the database and not hardcoded into business logic.
@@ -312,25 +346,30 @@ Detailed admin journey: operational review → moderation decisions → communic
 - Seller data must remain intact.
 
 ### Payment Records
+
 - The database must support subscription plans, subscriptions, and payment records from early stages.
 - Jaib is the intended payment provider, but Jaib API integration is postponed to the final payment integration phase.
 - No Jaib endpoints, authentication flows, webhooks, or API behavior are to be implemented or specified in this PRD.
 
 ### Analytics
+
 - The platform should capture basic analytics on marketplace usage, store views, product views, category performance, and subscription status.
 - Analytics should support future business optimization and reporting.
 
 ### SEO
+
 - Public marketplace pages must be SEO-friendly.
 - Public pages should support indexing where appropriate.
 - Store, product, and category pages should be structured to support discoverability in search engines.
 
 ### Moderation
+
 - Moderation is necessarily post-publication for stores, products, and services.
 - Admins must be able to review and intervene after content goes live.
 - Content may be suspended, removed, hidden, or reactivated based on policy and operational action.
 
 ### Audit Logging
+
 - System actions must be auditable for moderation, user actions, subscription changes, and administrative changes.
 - Audit information is part of admin responsibilities.
 
@@ -577,6 +616,7 @@ The following items are explicitly excluded from the MVP and Day 1 scope:
 ## 39. Future Roadmap
 
 ### Phase 1: MVP Launch (Sana'a)
+
 - Seller onboarding and storefront creation.
 - Public discovery pages and search.
 - Seller product and service management.
@@ -585,17 +625,20 @@ The following items are explicitly excluded from the MVP and Day 1 scope:
 - Payment domain model preparation for future payment integration.
 
 ### Phase 2: Marketplace Expansion and Quality Improvements
+
 - Expanded category depth and stronger filtering.
 - Improved product/service search relevance and ranking models.
 - Better review quality controls and contact-event tracking logic.
 - Enhanced seller dashboard analytics and notification experiences.
 
 ### Phase 3: Geographic Expansion
+
 - Multi-city or broader-region rollout beyond Sana'a.
 - More advanced location management.
 - Scalable category and moderation operations.
 
 ### Phase 4: Payment Integration and Monetization Maturity
+
 - Jaib integration in a final payment integration phase.
 - Expanded subscription plan logic and pricing configuration in the database.
 - Automated billing workflows and reconciliation as needed.
@@ -605,46 +648,55 @@ The following items are explicitly excluded from the MVP and Day 1 scope:
 ## 40. Acceptance Criteria
 
 ### Store Acceptance Criteria
+
 - A seller can create a store and the store is ACTIVE immediately.
 - The system sends a notification to admins when a store is created.
 - Admin can view, send a note, suspend, close, or reactivate a store.
 - A store can be hidden when its subscription or trial expires.
 
 ### Product Acceptance Criteria
+
 - A seller can create a product and the product is ACTIVE immediately.
 - The system sends a notification to admin on product creation.
 - Admin can view, send a note, suspend, remove, or reactivate a product.
 - Product visibility follows moderation and store subscription rules.
 
 ### Service Acceptance Criteria
+
 - A seller can create a service and it is ACTIVE immediately.
 - Service moderation rules align with the same post-publication model as stores and products.
 - Admin can intervene when needed.
 
 ### Customer & Public Marketplace Acceptance Criteria
+
 - A customer can browse the public marketplace without creating an account.
 - A customer can search and discover products, services, stores, and offers.
 - A logged-in customer can save favorites and engage in account-bound activities.
 
 ### Review and Reporting Acceptance Criteria
+
 - The system tracks contact events that support future review eligibility decisions.
 - Reviews are not based on Verified Purchase.
 - Customers and admins can report inappropriate or suspicious listings.
 
 ### Subscription & Trial Acceptance Criteria
+
 - The seller receives a 60-day trial when the store becomes active.
 - Current subscription values are recognized as 2500 YER monthly and 250 product limit, to be configured in database later.
 - Expired subscription or trial results in hiding public content without deleting seller data.
 
 ### Admin Acceptance Criteria
+
 - Admin can manage users, sellers, stores, products, services, categories, locations, reports, reviews, notifications, subscriptions, payment records, moderation, and audits.
 - Admin can act on moderation and operational issues after publication.
 
 ### Payment Domain Acceptance Criteria
+
 - The system has clear domain support for subscription plans, subscriptions, and payment records.
 - Jaib is not implemented in the MVP or this phase.
 
 ### SEO & Analytics Acceptance Criteria
+
 - Public marketplace pages are structured for SEO-friendliness.
 - Basic analytics on marketplace behavior are supported.
 
@@ -675,16 +727,19 @@ This section consolidates the key business rules that must be preserved in the M
 ## 42. Risks, Assumptions, and Dependencies
 
 ### Assumptions
+
 - A working business and operational entity for sellers and admins will exist in later implementation phases.
 - Future architecture will include separate public website, seller dashboard, and admin dashboard experiences.
 - Data models will support subscription configuration, payment records, and future geographic expansion.
 
 ### Dependencies
+
 - Role-based access model for customer, seller, and admin.
 - Database support for dynamic categories, locations, subscriptions, payment records, and audit records.
 - Seller contact channel management and tracking of contact events.
 
 ### Risks
+
 - Marketplace trust may be negatively affected if moderation is weak.
 - Subscription expiry could create confusion if hiding content is not clearly communicated.
 - Review quality depends on the later Contact Event rule model and its implementation.

@@ -15,38 +15,47 @@ These three domains share a common backend and data model but are intentionally 
 ## 2. Target Technology Stack
 
 ### Frontend
+
 - Next.js
 - TypeScript
 - Tailwind CSS
 
 ### Admin
+
 - Next.js
 - TypeScript
 - Tailwind CSS
 
 ### Backend
+
 - Node.js
 - Express.js
 - TypeScript
 
 ### Database
+
 - MySQL 8+
 
 ### ORM
+
 - Prisma
 
 ### Validation
+
 - Zod
 
 ### Authentication
+
 - JWT
 - HTTP-only cookies
 
 ### Development / Tooling
+
 - Docker
 - pnpm
 
 ### Repository structure
+
 - pnpm monorepo
 - apps/
   - web/
@@ -64,14 +73,14 @@ This is the intended monorepo layout and is documented for architecture planning
 ## 3. High-Level Architecture
 
 Public web application
-  ↓
-  API layer
-  ↓
-  Business services
-  ↓
-  Repository layer
-  ↓
-  MySQL database via Prisma
+↓
+API layer
+↓
+Business services
+↓
+Repository layer
+↓
+MySQL database via Prisma
 
 The architecture follows a layered service model in which the backend owns business logic, permissions, and state transitions.
 
@@ -90,7 +99,9 @@ Repository
 Database
 
 ### 4.1 Route
+
 Responsibilities:
+
 - define HTTP routes
 - group endpoints by domain or resource
 - compose middleware for auth, roles, rate limiting, request context, and request logging
@@ -98,7 +109,9 @@ Responsibilities:
 - do not contain business logic
 
 ### 4.2 Controller
+
 Responsibilities:
+
 - handle HTTP concerns only
 - parse request data, params, query, and body
 - call services with validated context
@@ -107,10 +120,13 @@ Responsibilities:
 - do not contain business rules or persistence logic
 
 Important rule:
+
 - Controllers must not contain core business logic.
 
 ### 4.3 Service
+
 Responsibilities:
+
 - enforce business rules
 - orchestrate business logic across repositories and domain objects
 - validate business conditions
@@ -119,10 +135,13 @@ Responsibilities:
 - own the business rules for subscription, moderation, review eligibility, and permissions
 
 Important rule:
+
 - Services own business logic.
 
 ### 4.4 Repository
+
 Responsibilities:
+
 - encapsulate persistence and database access
 - execute Prisma queries
 - map database entities to domain semantics when needed
@@ -130,10 +149,13 @@ Responsibilities:
 - own persistence logic only
 
 Important rule:
+
 - Repositories own persistence logic.
 
 ### 4.5 Database
+
 Responsibilities:
+
 - store persisted marketplace records
 - support MySQL 8+ and Prisma-based data access
 - enforce integrity rules where practical
@@ -142,12 +164,14 @@ Responsibilities:
 ## 5. Validation and Input Boundaries
 
 ### 5.1 Validation layer
+
 - Use Zod schemas for external input validation.
 - Validation occurs at the API boundary before business logic.
 - Validation ensures data consistency and server-side safety.
 - Frontend validation is never considered authoritative.
 
 ### 5.2 Validation boundaries
+
 - Route/middleware layer may run schema validation for request payloads.
 - Controllers should not trust raw input.
 - Business services should still validate critical domain state when required.
@@ -156,18 +180,21 @@ Responsibilities:
 ## 6. Authentication and Authorization Boundaries
 
 ### 6.1 Authentication boundaries
+
 - Public marketplace access remains unauthenticated.
 - Seller and admin functions require authenticated sessions.
 - Authentication should use JWTs issued to the server and stored in HTTP-only cookies.
 - Tokens should be validated centrally before protected endpoints are processed.
 
 ### 6.2 Authorization boundaries
+
 - Permission checks must occur in backend service or middleware boundaries.
 - Seller authorization is based on store ownership, role assignment, and policy checks.
 - Admin authorization is separate and must be enforced independently from seller role checks.
 - Authorization must not be inferred from frontend state.
 
 ### 6.3 Security boundaries
+
 - API server must enforce access control at the backend.
 - Public routes can be anonymous but must not expose protected or account-level business data.
 - Sensitive fields and internal system data must be redacted from public responses.
@@ -176,12 +203,14 @@ Responsibilities:
 ## 7. Error Handling and Logging
 
 ### 7.1 Error handling
+
 - Centralize API error handling.
 - Domain rules should raise structured business errors or service-level errors.
 - Controllers should translate errors into standard HTTP responses without leaking internal data.
 - Validation failures, authorization failures, and business rule violations must be clearly distinguishable.
 
 ### 7.2 Logging
+
 - Log security-relevant events and operational actions.
 - Log admin moderation actions, report actions, subscription status changes, and process failures.
 - Keep logs operational and separate from business data rendering.
@@ -189,15 +218,18 @@ Responsibilities:
 ## 8. Configuration and Shared Data
 
 ### 8.1 Configuration
+
 - Configuration must use environment variables.
 - No secrets should be committed to source control.
 - Values that belong in business configuration should be stored in the database when appropriate.
 
 ### 8.2 Shared types
+
 - Shared domain types and interfaces should live in a common package rather than being duplicated across apps and packages.
 - Shared contracts should be versioned and kept consistent.
 
 ### 8.3 Database package
+
 - Prisma should be packaged in a central database layer.
 - Database access should be encapsulated via the repository layer.
 - A shared package should be used for Prisma schema management and generated types if appropriate for the repo structure.
@@ -238,6 +270,7 @@ The important rule is that high-level layers must not depend on lower-level impl
 ## 13. Payment Architecture
 
 ### 13.1 Current architecture position
+
 - The database must support the following domain concepts from early stages:
   - SubscriptionPlan
   - Subscription
@@ -246,11 +279,13 @@ The important rule is that high-level layers must not depend on lower-level impl
 - Jaib API integration is deferred to the final payment integration phase.
 
 ### 13.2 Provider abstraction
+
 - A payment provider abstraction can be introduced during the final payment phase.
 - This abstraction should isolate provider-specific logic from the core subscription and payment domain in a future implementation stage.
 - The abstraction should not be designed prematurely as a fictional Jaib implementation.
 
 ### 13.3 Explicit constraints
+
 - Do not invent Jaib endpoints.
 - Do not invent Jaib authentication flows.
 - Do not invent Jaib webhooks.
@@ -260,6 +295,7 @@ The important rule is that high-level layers must not depend on lower-level impl
 ## 14. Business Domain Boundaries
 
 ### 14.1 Public marketplace domain
+
 - store discovery
 - product discovery
 - service discovery
@@ -269,6 +305,7 @@ The important rule is that high-level layers must not depend on lower-level impl
 - offer discovery
 
 ### 14.2 Seller domain
+
 - account lifecycle
 - seller store management
 - product/service management
@@ -277,6 +314,7 @@ The important rule is that high-level layers must not depend on lower-level impl
 - admin note visibility
 
 ### 14.3 Admin domain
+
 - moderation
 - suspension and reactivation
 - report handling

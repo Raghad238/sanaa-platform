@@ -3,7 +3,10 @@ export type ValidationResult = {
   errors: string[];
 };
 
-export function validateRequired(value: string | null | undefined, fieldName: string): ValidationResult {
+export function validateRequired(
+  value: string | null | undefined,
+  fieldName: string,
+): ValidationResult {
   const trimmed = value?.trim();
 
   return {

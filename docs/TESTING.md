@@ -5,6 +5,7 @@ This document defines the recommended testing strategy for Sana'a Marketplace. T
 ## 1. Testing Goals
 
 The project should validate:
+
 - product rules and business logic
 - permission and authorization behavior
 - risk-prone status transitions
@@ -15,9 +16,11 @@ The project should validate:
 ## 2. Test Types
 
 ### 2.1 Unit tests
+
 Unit tests should validate business logic in isolation, especially in services and utility modules.
 
 Recommended unit test focus:
+
 - subscription state transitions
 - trial expiry and visibility logic
 - product limit enforcement
@@ -32,9 +35,11 @@ Recommended unit test focus:
 Unit tests should validate the real domain rules, not mock-only behavior. They should remain focused, fast, and deterministic.
 
 ### 2.2 Integration tests
+
 Integration tests should validate the interaction between service, repository, persistence, middleware, and API layers.
 
 Recommended integration test subjects:
+
 - service + repository transactions
 - store creation with immediate ACTIVE state
 - product creation with immediate ACTIVE state
@@ -48,9 +53,11 @@ Recommended integration test subjects:
 - favorites and report workflows
 
 ### 2.3 API tests
+
 API tests should validate request handling, validation, authentication, authorization, and response contracts.
 
 Test areas:
+
 - HTTP status codes
 - request validation failures
 - authentication failure and success cases
@@ -62,9 +69,11 @@ Test areas:
 - soft-deletion and visibility semantics where exposed by API
 
 ### 2.4 End-to-end (E2E) tests
+
 E2E tests should cover critical customer, seller, and admin journeys.
 
 #### Seller flow
+
 1. Register
 2. Login
 3. Create Store
@@ -74,6 +83,7 @@ E2E tests should cover critical customer, seller, and admin journeys.
 7. Receive notifications or admin notes when relevant
 
 #### Customer flow
+
 1. Browse public marketplace
 2. Search for products or services
 3. Open store or listing
@@ -83,6 +93,7 @@ E2E tests should cover critical customer, seller, and admin journeys.
 7. Submit a review if eligible
 
 #### Admin flow
+
 1. Login
 2. Inspect content and reports
 3. Send note
@@ -90,6 +101,7 @@ E2E tests should cover critical customer, seller, and admin journeys.
 5. Review audit trail or moderation actions
 
 #### Subscription flow
+
 1. Store created
 2. Trial starts
 3. Trial expires
@@ -99,12 +111,14 @@ E2E tests should cover critical customer, seller, and admin journeys.
 7. Store visibility can be restored according to policy
 
 #### Payment domain test posture
+
 - No real Jaib tests are required until the final payment phase.
 - Payment tests should focus on internal domain state and provider abstraction boundaries only when the implementation phase includes them.
 
 ## 3. Security Testing
 
 Security tests should cover:
+
 - authentication failures
 - authorization boundary violations
 - validation bypass attempts
@@ -123,6 +137,7 @@ All backend logic must be treated as the authority for permission and access dec
 ## 4. Manual Testing
 
 Manual testing is required when:
+
 - UX flows need human validation
 - business rules depend on editorial judgment or moderation review
 - notification experience and seller/admin communication require confirmation
@@ -134,6 +149,7 @@ Manual testing should be used after automated checks when human validation is im
 ## 5. Regression Testing Expectations
 
 Regression testing should verify:
+
 - previously accepted business rules remain unchanged
 - status transitions remain valid
 - trial and subscription logic still works after changes
@@ -161,6 +177,7 @@ Implementation where applicable
 → Commit
 
 ### Required standard
+
 - A failed required check means the day is not complete.
 - A skipped required check must be explicitly justified and documented.
 - No success claim should be made without actual execution evidence.
@@ -175,6 +192,7 @@ Implementation where applicable
 ## 8. Non-Functional Testing Considerations
 
 The project should eventually validate:
+
 - error resilience
 - service uptime expectations
 - database connectivity resilience
@@ -186,6 +204,7 @@ The project should eventually validate:
 ## 9. Testing Priorities by Phase
 
 ### Phase 1 priority
+
 - store create/activate rules
 - product create/activate rules
 - service create/activate rules
@@ -196,6 +215,7 @@ The project should eventually validate:
 - permissions and authorization checks
 
 ### Phase 2 priority
+
 - search relevance and discover ranking behavior
 - notification generation
 - category management
@@ -203,6 +223,7 @@ The project should eventually validate:
 - admin dashboard workflows
 
 ### Final payment phase priority
+
 - payment domain readiness
 - provider abstraction boundaries only when applicable
 - no Jaib-specific API contract tests before the final payment phase

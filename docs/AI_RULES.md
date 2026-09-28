@@ -79,10 +79,12 @@ This document defines mandatory rules for any AI coding agent working on Sana'a 
 ## 10. Day Completion Rule
 
 48. Before completing a coding day, run the required applicable checks where relevant:
+
 - typecheck
 - lint
 - tests
 - build
+
 49. If a check is not applicable, document why it was not run.
 
 ## 11. Final Guardrail

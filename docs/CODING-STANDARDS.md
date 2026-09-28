@@ -5,21 +5,25 @@ This document defines the coding standards for the Sana'a Marketplace project an
 ## 1. General Standards
 
 ### TypeScript
+
 - Use TypeScript in strict mode for all implementation work.
 - Prefer explicit types and clear interfaces over implicit any.
 - Avoid unsafe type assertions unless there is a justified reason and documentation.
 
 ### Naming
+
 - Use clear, descriptive names for domains, variables, functions, and modules.
 - Favor domain language over UI or framework jargon whenever possible.
 - Prefer names that communicate business meaning over technical shorthand.
 
 ### Small modules
+
 - Keep modules focused and cohesive.
 - Avoid large files with unrelated responsibilities.
 - Split work by domain and boundary rather than by implementation convenience.
 
 ### Separation of concerns
+
 - Keep API concerns separate from business logic.
 - Keep persistence concerns separate from service logic.
 - Keep validation separate from controller logic.
@@ -28,29 +32,34 @@ This document defines the coding standards for the Sana'a Marketplace project an
 ## 2. Backend Architecture Standards
 
 ### Controllers
+
 - Controllers handle HTTP concerns only.
 - Controllers must not contain core business logic.
 - Controllers should not directly query the database or implement domain rules.
 - Controllers should delegate orchestration to services.
 
 ### Services
+
 - Services own business logic.
 - Services orchestrate workflows and policy checks.
 - Services decide what constitutes valid state transitions.
 - Services should coordinate repositories and shared domain operations.
 
 ### Repositories
+
 - Repositories own persistence logic.
 - Repositories should encapsulate Prisma and SQL-level logic.
 - Repositories should not implement business policy or pricing rules.
 - Repositories should not define visibility logic unrelated to persistence.
 
 ### Validation
+
 - Use Zod to validate all external input.
 - Validate request payloads, params, headers, and query values before business processing.
 - Treat frontend validation as a convenience only.
 
 ### Error handling
+
 - Centralize API error handling.
 - Use consistent error types or error metadata across applications.
 - Distinguish validation errors, not-found errors, authorization errors, and business rule violations.
@@ -59,6 +68,7 @@ This document defines the coding standards for the Sana'a Marketplace project an
 ## 3. Business Logic Ownership
 
 The backend is the source of truth for the following:
+
 - permissions
 - subscription status
 - product limits
@@ -81,20 +91,24 @@ This must be enforced in backend services and repository-backed logic. Frontend 
 ## 5. Business Rule Standards
 
 ### No duplicated business logic
+
 - Do not duplicate rules across controllers, routes, frontend code, or ad hoc utilities.
 - Put business rules in the service layer or shared domain logic.
 
 ### No unnecessary abstractions
+
 - Do not over-engineer small domain problems.
 - Add abstraction only when it improves clarity, testability, or long-term maintainability.
 
 ### No hardcoded product configuration
+
 - Do not hardcode subscription limits.
 - Do not hardcode categories.
 - Do not hardcode business configuration that belongs in the database.
 - Current plan values are retained as product defaults but should become database-driven as the system matures.
 
 ### No approval workflow changes
+
 - Do not create approval workflows for Store, Product, or Service publication.
 - The business model requires immediate activation without admin pre-approval.
 
@@ -126,14 +140,17 @@ This must be enforced in backend services and repository-backed logic. Frontend 
 ## 9. Lint, Formatting, and Import Standards
 
 ### Linting
+
 - Keep lint rules enforced consistently across code.
 - Use shared ESLint configuration from the repository packages.
 
 ### Formatting
+
 - Format code consistently.
 - Follow project formatting conventions and avoid ad hoc formatting.
 
 ### Imports
+
 - Use explicit imports.
 - Avoid circular imports.
 - Prefer stable and well-organized package boundaries.
@@ -141,11 +158,13 @@ This must be enforced in backend services and repository-backed logic. Frontend 
 ## 10. Async and Transaction Standards
 
 ### Async error handling
+
 - Handle promise rejections explicitly.
 - Avoid unhandled async failures.
 - Use consistent patterns for transaction boundaries and error propagation.
 
 ### Database transactions
+
 - Wrap multi-step state changes in transactions when they are interdependent.
 - Use transactions for state transitions that must be atomic, such as subscription-related updates and moderation enforcement when applicable.
 - Keep transaction boundaries narrowly scoped to the needed workflow.
@@ -197,6 +216,7 @@ This must be enforced in backend services and repository-backed logic. Frontend 
 ## 16. Completion Standards
 
 Before completing a coding day, the team should run the applicable quality checks for the implementation stage, including:
+
 - typecheck
 - lint
 - tests
