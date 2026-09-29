@@ -1,7 +1,13 @@
-export type DatabaseClient = {
-  connected: boolean;
+import { PrismaClient } from '@prisma/client';
+
+const globalForPrisma = globalThis as typeof globalThis & {
+  prisma?: PrismaClient;
 };
 
-export const databaseClient: DatabaseClient = {
-  connected: false,
-};
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
+export { Prisma, PrismaClient } from '@prisma/client';

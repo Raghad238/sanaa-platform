@@ -3,11 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "echo \"api app dev placeholder\"",
-    "build": "echo \"api app build placeholder\"",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc --project tsconfig.json",
     "lint": "eslint . --ext .ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/**/*.test.ts"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@sanaa-platform/database": "workspace:*",
+    "cors": "^2.8.6",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "@types/supertest": "^6.0.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2"
+  }
 }
