@@ -1,0 +1,486 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum StoreStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+
+  @@map("store_status")
+}
+
+enum ContactChannelType {
+  WHATSAPP
+  INSTAGRAM
+  FACEBOOK
+  TIKTOK
+  TELEGRAM
+  WEBSITE
+  PHONE
+  OTHER
+
+  @@map("contact_channel_type")
+}
+
+enum BillingInterval {
+  MONTHLY
+
+  @@map("billing_interval")
+}
+
+enum PaymentProvider {
+  JEEB
+
+  @@map("payment_provider")
+}
+
+model User {
+  id               String            @id @default(uuid()) @db.Char(36)
+  email            String            @unique @db.VarChar(320)
+  passwordHash     String            @map("password_hash") @db.VarChar(255)
+  name             String            @db.VarChar(191)
+  phone            String?           @db.VarChar(32)
+  status           String            @db.VarChar(32)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.DateTime(3)
+  seller           Seller?
+  reviews          Review[]
+  favoriteProducts FavoriteProduct[]
+  favoriteStores   FavoriteStore[]
+  favoriteServices FavoriteService[]
+  reports          Report[]          @relation("ReportReporter")
+  resolvedReports  Report[]          @relation("ReportResolver")
+  adminNotes       AdminNote[]
+  notifications    Notification[]
+  analyticsEvents  AnalyticsEvent[]
+  auditLogs        AuditLog[]
+
+  @@index([status])
+  @@map("users")
+}
+
+model Seller {
+  id            String         @id @default(uuid()) @db.Char(36)
+  userId        String         @unique @map("user_id") @db.Char(36)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.DateTime(3)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  store         Store?
+  subscriptions Subscription[]
+
+  @@map("sellers")
+}
+
+model Store {
+  id              String           @id @default(uuid()) @db.Char(36)
+  sellerId        String           @unique @map("seller_id") @db.Char(36)
+  name            String           @db.VarChar(191)
+  slug            String           @unique @db.VarChar(191)
+  description     String?          @db.Text
+  logoUrl         String?          @map("logo_url") @db.VarChar(2048)
+  coverImageUrl   String?          @map("cover_image_url") @db.VarChar(2048)
+  status          StoreStatus      @default(ACTIVE)
+  createdAt       DateTime         @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.DateTime(3)
+  seller          Seller           @relation(fields: [sellerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  products        Product[]
+  services        Service[]
+  contactChannels ContactChannel[]
+  reviews         Review[]
+  locations       StoreLocation[]
+  favorites       FavoriteStore[]
+
+  @@index([status])
+  @@map("stores")
+}
+
+model Category {
+  id          String     @id @default(uuid()) @db.Char(36)
+  name        String     @db.VarChar(191)
+  slug        String     @db.VarChar(191)
+  description String?    @db.Text
+  parentId    String?    @map("parent_id") @db.Char(36)
+  status      String     @db.VarChar(32)
+  createdAt   DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime   @updatedAt @map("updated_at") @db.DateTime(3)
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  services    Service[]
+
+  @@index([parentId])
+  @@index([status])
+  @@map("categories")
+}
+
+model Product {
+  id          String            @id @default(uuid()) @db.Char(36)
+  storeId     String            @map("store_id") @db.Char(36)
+  categoryId  String            @map("category_id") @db.Char(36)
+  name        String            @db.VarChar(191)
+  slug        String            @db.VarChar(191)
+  description String?           @db.Text
+  price       Decimal           @db.Decimal(12, 2)
+  currency    String            @default("YER") @db.Char(3)
+  status      String            @default("ACTIVE") @db.VarChar(32)
+  createdAt   DateTime          @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.DateTime(3)
+  store       Store             @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  category    Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  images      ProductImage[]
+  offers      Offer[]
+  favorites   FavoriteProduct[]
+
+  @@index([storeId, status, createdAt])
+  @@index([categoryId, status])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid()) @db.Char(36)
+  productId String   @map("product_id") @db.Char(36)
+  imageUrl  String   @map("image_url") @db.VarChar(2048)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([productId, sortOrder])
+  @@map("product_images")
+}
+
+model Service {
+  id          String            @id @default(uuid()) @db.Char(36)
+  storeId     String            @map("store_id") @db.Char(36)
+  categoryId  String            @map("category_id") @db.Char(36)
+  name        String            @db.VarChar(191)
+  slug        String            @db.VarChar(191)
+  description String?           @db.Text
+  price       Decimal?          @db.Decimal(12, 2)
+  currency    String            @default("YER") @db.Char(3)
+  status      String            @default("ACTIVE") @db.VarChar(32)
+  createdAt   DateTime          @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.DateTime(3)
+  store       Store             @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  category    Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  images      ServiceImage[]
+  favorites   FavoriteService[]
+
+  @@index([storeId, status, createdAt])
+  @@index([categoryId, status])
+  @@map("services")
+}
+
+model ServiceImage {
+  id        String   @id @default(uuid()) @db.Char(36)
+  serviceId String   @map("service_id") @db.Char(36)
+  imageUrl  String   @map("image_url") @db.VarChar(2048)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([serviceId, sortOrder])
+  @@map("service_images")
+}
+
+model Location {
+  id        String          @id @default(uuid()) @db.Char(36)
+  name      String          @db.VarChar(191)
+  type      String          @db.VarChar(64)
+  parentId  String?         @map("parent_id") @db.Char(36)
+  createdAt DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+  parent    Location?       @relation("LocationHierarchy", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  children  Location[]      @relation("LocationHierarchy")
+  stores    StoreLocation[]
+
+  @@index([parentId])
+  @@map("locations")
+}
+
+model StoreLocation {
+  storeId    String   @map("store_id") @db.Char(36)
+  locationId String   @map("location_id") @db.Char(36)
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  store      Store    @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([storeId, locationId])
+  @@index([locationId])
+  @@map("store_locations")
+}
+
+model ContactChannel {
+  id        String             @id @default(uuid()) @db.Char(36)
+  storeId   String             @map("store_id") @db.Char(36)
+  type      ContactChannelType
+  value     String             @db.VarChar(2048)
+  label     String?            @db.VarChar(191)
+  isPrimary Boolean            @default(false) @map("is_primary")
+  isActive  Boolean            @default(true) @map("is_active")
+  createdAt DateTime           @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.DateTime(3)
+  store     Store              @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([storeId, isActive])
+  @@map("contact_channels")
+}
+
+model Offer {
+  id                 String    @id @default(uuid()) @db.Char(36)
+  productId          String    @map("product_id") @db.Char(36)
+  oldPrice           Decimal   @map("old_price") @db.Decimal(12, 2)
+  newPrice           Decimal   @map("new_price") @db.Decimal(12, 2)
+  discountPercentage Decimal?  @map("discount_percentage") @db.Decimal(5, 2)
+  startAt            DateTime? @map("start_at") @db.DateTime(3)
+  endAt              DateTime? @map("end_at") @db.DateTime(3)
+  status             String    @db.VarChar(32)
+  createdAt          DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt          DateTime  @updatedAt @map("updated_at") @db.DateTime(3)
+  product            Product   @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([productId, status])
+  @@index([status, startAt, endAt])
+  @@map("offers")
+}
+
+model Review {
+  id              String   @id @default(uuid()) @db.Char(36)
+  userId          String   @map("user_id") @db.Char(36)
+  storeId         String   @map("store_id") @db.Char(36)
+  rating          Int      @db.UnsignedTinyInt
+  comment         String?  @db.Text
+  contactVerified Boolean  @default(false) @map("contact_verified")
+  status          String   @db.VarChar(32)
+  createdAt       DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  store           Store    @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([userId, storeId])
+  @@index([storeId, createdAt])
+  @@map("reviews")
+}
+
+model FavoriteProduct {
+  userId    String   @map("user_id") @db.Char(36)
+  productId String   @map("product_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([userId, productId])
+  @@index([productId])
+  @@map("favorite_products")
+}
+
+model FavoriteStore {
+  userId    String   @map("user_id") @db.Char(36)
+  storeId   String   @map("store_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([userId, storeId])
+  @@index([storeId])
+  @@map("favorite_stores")
+}
+
+model FavoriteService {
+  userId    String   @map("user_id") @db.Char(36)
+  serviceId String   @map("service_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([userId, serviceId])
+  @@index([serviceId])
+  @@map("favorite_services")
+}
+
+model Report {
+  id             String    @id @default(uuid()) @db.Char(36)
+  reporterUserId String    @map("reporter_user_id") @db.Char(36)
+  targetType     String    @map("target_type") @db.VarChar(64)
+  targetId       String    @map("target_id") @db.Char(36)
+  reason         String    @db.VarChar(191)
+  description    String?   @db.Text
+  status         String    @db.VarChar(32)
+  resolvedBy     String?   @map("resolved_by") @db.Char(36)
+  resolvedAt     DateTime? @map("resolved_at") @db.DateTime(3)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.DateTime(3)
+  reporter       User      @relation("ReportReporter", fields: [reporterUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  resolver       User?     @relation("ReportResolver", fields: [resolvedBy], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// targetType and targetId are polymorphic and validated by application logic.
+  @@index([reporterUserId, createdAt])
+  @@index([resolvedBy])
+  @@index([targetType, targetId])
+  @@index([status, createdAt])
+  @@map("reports")
+}
+
+model AdminNote {
+  id          String   @id @default(uuid()) @db.Char(36)
+  adminUserId String   @map("admin_user_id") @db.Char(36)
+  targetType  String   @map("target_type") @db.VarChar(64)
+  targetId    String   @map("target_id") @db.Char(36)
+  note        String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+  adminUser   User     @relation(fields: [adminUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  /// targetType and targetId are polymorphic and validated by application logic.
+  @@index([adminUserId, createdAt])
+  @@index([targetType, targetId])
+  @@map("admin_notes")
+}
+
+model SubscriptionPlan {
+  id              String          @id @default(uuid()) @db.Char(36)
+  name            String          @db.VarChar(191)
+  description     String?         @db.Text
+  price           Decimal         @default(2500) @db.Decimal(12, 2)
+  currency        String          @default("YER") @db.Char(3)
+  billingInterval BillingInterval @default(MONTHLY) @map("billing_interval")
+  trialDays       Int             @default(60) @map("trial_days") @db.UnsignedInt
+  maxProducts     Int             @default(250) @map("max_products") @db.UnsignedInt
+  features        Json?
+  status          String          @db.VarChar(32)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+  subscriptions   Subscription[]
+
+  @@index([status])
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id                 String           @id @default(uuid()) @db.Char(36)
+  sellerId           String           @map("seller_id") @db.Char(36)
+  planId             String           @map("plan_id") @db.Char(36)
+  status             String           @db.VarChar(32)
+  trialStartAt       DateTime?        @map("trial_start_at") @db.DateTime(3)
+  trialEndAt         DateTime?        @map("trial_end_at") @db.DateTime(3)
+  currentPeriodStart DateTime?        @map("current_period_start") @db.DateTime(3)
+  currentPeriodEnd   DateTime?        @map("current_period_end") @db.DateTime(3)
+  cancelledAt        DateTime?        @map("cancelled_at") @db.DateTime(3)
+  createdAt          DateTime         @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.DateTime(3)
+  seller             Seller           @relation(fields: [sellerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  plan               SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  payments           Payment[]
+
+  @@index([sellerId, status])
+  @@index([planId])
+  @@index([status, currentPeriodEnd])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id                    String          @id @default(uuid()) @db.Char(36)
+  subscriptionId        String          @map("subscription_id") @db.Char(36)
+  amount                Decimal         @db.Decimal(12, 2)
+  currency              String          @default("YER") @db.Char(3)
+  provider              PaymentProvider
+  providerTransactionId String?         @map("provider_transaction_id") @db.VarChar(191)
+  status                String          @db.VarChar(32)
+  paidAt                DateTime?       @map("paid_at") @db.DateTime(3)
+  metadata              Json?
+  createdAt             DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt             DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+  subscription          Subscription    @relation(fields: [subscriptionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([subscriptionId, status])
+  @@index([provider, providerTransactionId])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
+  type      String    @db.VarChar(64)
+  title     String    @db.VarChar(191)
+  message   String    @db.Text
+  data      Json?
+  readAt    DateTime? @map("read_at") @db.DateTime(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(uuid()) @db.Char(36)
+  userId     String?  @map("user_id") @db.Char(36)
+  eventType  String   @map("event_type") @db.VarChar(64)
+  targetType String?  @map("target_type") @db.VarChar(64)
+  targetId   String?  @map("target_id") @db.Char(36)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// targetType and targetId are polymorphic and validated by application logic.
+  @@index([userId, createdAt])
+  @@index([eventType, createdAt])
+  @@index([targetType, targetId, createdAt])
+  @@map("analytics_events")
+}
+
+model Role {
+  id          String           @id @default(uuid()) @db.Char(36)
+  name        String           @db.VarChar(191)
+  description String?          @db.Text
+  createdAt   DateTime         @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.DateTime(3)
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid()) @db.Char(36)
+  name        String           @db.VarChar(191)
+  description String?          @db.Text
+  createdAt   DateTime         @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.DateTime(3)
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id") @db.Char(36)
+  permissionId String     @map("permission_id") @db.Char(36)
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Char(36)
+  userId     String   @map("user_id") @db.Char(36)
+  action     String   @db.VarChar(191)
+  targetType String   @map("target_type") @db.VarChar(64)
+  targetId   String   @map("target_id") @db.Char(36)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  /// targetType and targetId are polymorphic and validated by application logic.
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+  @@index([targetType, targetId, createdAt])
+  @@map("audit_logs")
+}
