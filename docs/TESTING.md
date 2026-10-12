@@ -1,233 +1,165 @@
 # Testing Strategy
 
-This document defines the recommended testing strategy for Sana'a Marketplace. The focus is documentation and planning only. It does not create application code or run implementation checks.
+This document defines the testing strategy for the Sana'a Wedding Marketplace. It is a planning document only and does not imply that the implementation already exists or that tests have been executed.
 
 ## 1. Testing Goals
 
 The project should validate:
 
-- product rules and business logic
-- permission and authorization behavior
-- risk-prone status transitions
-- API contracts and validation logic
-- safe deployment and operational readiness
-- regression protection as development continues
+- product and business rules
+- permissions and authorization behavior
+- status transitions and visibility logic
+- API contract and validation behavior
+- operational safety and deployment readiness
+- regression protection as the project grows
 
 ## 2. Test Types
 
 ### 2.1 Unit tests
 
-Unit tests should validate business logic in isolation, especially in services and utility modules.
+Unit tests should validate business logic in isolation, particularly in service and utility modules.
 
-Recommended unit test focus:
+Recommended focus areas:
 
-- subscription state transitions
-- trial expiry and visibility logic
+- subscription and trial state transitions
+- visibility and hiding rules after expiration
 - product limit enforcement
-- store visibility rules
-- product/service activation logic
-- review eligibility rules based on Contact Event
+- store status rules
+- product and service activation behavior
+- review eligibility based on Contact Event
 - report and moderation decision logic
-- category validation and admin-managed taxonomy enforcement
-- permissions and ownership checks
-- notification generation logic where domain logic is available
-
-Unit tests should validate the real domain rules, not mock-only behavior. They should remain focused, fast, and deterministic.
+- category validation and admin-managed taxonomy behavior
+- ownership and permission checks
 
 ### 2.2 Integration tests
 
-Integration tests should validate the interaction between service, repository, persistence, middleware, and API layers.
+Integration tests should validate the interaction between service, repository, middleware, and API layers.
 
-Recommended integration test subjects:
+Recommended scenarios:
 
-- service + repository transactions
 - store creation with immediate ACTIVE state
 - product creation with immediate ACTIVE state
 - service creation with immediate ACTIVE state
 - trial expiry and visibility behavior
-- subscription reactivation and public visibility restoration
-- moderation actions and status transitions
+- subscription reactivation and visibility restoration
+- moderation actions and status changes
 - seller ownership enforcement
 - admin moderation flows
-- contact event recording and review eligibility logic
-- favorites and report workflows
+- contact event recording and review eligibility
 
 ### 2.3 API tests
 
-API tests should validate request handling, validation, authentication, authorization, and response contracts.
+API tests should validate HTTP behavior and contract expectations.
 
-Test areas:
+Areas to cover:
 
 - HTTP status codes
 - request validation failures
-- authentication failure and success cases
-- authorization failure and role boundaries
+- authentication and authorization boundaries
+- pagination and filtering behavior
 - response contract consistency
-- error response contract consistency
-- pagination contract behavior
-- filtering and sorting behavior
-- soft-deletion and visibility semantics where exposed by API
+- soft-deletion or visibility semantics where exposed
 
-### 2.4 End-to-end (E2E) tests
+### 2.4 End-to-end tests
 
 E2E tests should cover critical customer, seller, and admin journeys.
 
-#### Seller flow
-
-1. Register
-2. Login
-3. Create Store
-4. Trial starts
-5. Add Product
-6. Manage Store
-7. Receive notifications or admin notes when relevant
-
 #### Customer flow
 
-1. Browse public marketplace
-2. Search for products or services
-3. Open store or listing
-4. Contact seller through supported channel
-5. Contact Event recorded
-6. Review becomes eligible under business rules
-7. Submit a review if eligible
+1. browse public marketplace
+2. search for category or vendor
+3. open a store or service listing
+4. contact the seller via the listed channel
+5. review eligibility is checked based on contact event rules
+
+#### Seller flow
+
+1. create account
+2. create store
+3. add products and services
+4. review subscription or trial state
+5. receive moderation or operational notes
 
 #### Admin flow
 
-1. Login
-2. Inspect content and reports
-3. Send note
-4. Suspend or reactivate store/product/service
-5. Review audit trail or moderation actions
+1. log in to admin dashboard
+2. review reports or store activity
+3. manage categories, stores, products, and services
+4. suspend or reactivate content when required
 
-#### Subscription flow
+## 3. Acceptance Tests for Dynamic Categories and Reviews
 
-1. Store created
-2. Trial starts
-3. Trial expires
-4. Store becomes hidden from public access
-5. Seller data remains preserved
-6. Subscription becomes active again
-7. Store visibility can be restored according to policy
+Upcoming acceptance tests should cover:
 
-#### Payment domain test posture
+- creating a category without code changes
+- editing a category name and description
+- reordering and activating or disabling categories
+- creating a category hierarchy for nested wedding-related niches
+- ensuring category data is resolved from the backend, not a fixed UI list
+- review eligibility based on contact events and moderation rules
+- permissions for customer, seller, and admin actions
+- public browsing without login
 
-- No real Jaib tests are required until the final payment phase.
-- Payment tests should focus on internal domain state and provider abstraction boundaries only when the implementation phase includes them.
-
-## 3. Security Testing
+## 4. Security Testing
 
 Security tests should cover:
 
-- authentication failures
-- authorization boundary violations
+- auth failures
+- authorization boundary checks
 - validation bypass attempts
 - rate limiting behavior
-- cookie configuration and handling
-- CORS policy behavior
-- injection risk checks
-- XSS-related risk review for rendered content and user-provided values
-- CSRF considerations where cookies and stateful auth are used
-- file upload validation where implemented
-- secret handling and accidental exposure
+- cookie security and CORS behavior
+- XSS and injection review where user-generated content appears
 - privilege boundary enforcement
 
-All backend logic must be treated as the authority for permission and access decisions.
+## 5. Manual Testing
 
-## 4. Manual Testing
+Manual testing remains necessary when:
 
-Manual testing is required when:
+- UX flow validation is needed
+- moderation judgment depends on human review
+- public discovery quality needs product judgment
+- category management is being validated with user-facing workflows
 
-- UX flows need human validation
-- business rules depend on editorial judgment or moderation review
-- notification experience and seller/admin communication require confirmation
-- public discovery or search relevance needs review by product stakeholders
-- subscription visibility behavior must be demonstrated in realistic scenarios
-
-Manual testing should be used after automated checks when human validation is important.
-
-## 5. Regression Testing Expectations
+## 6. Regression Testing Expectations
 
 Regression testing should verify:
 
-- previously accepted business rules remain unchanged
-- status transitions remain valid
-- trial and subscription logic still works after changes
-- store, product, and service activations remain immediate and without pre-approval
 - public browsing remains available without login
-- no silent change to the Contact Event review model
-- categories remain admin-managed and dynamic
-- data preservation is maintained when visibility changes due to expiration
+- immediate activation remains the default for stores and listings
+- no hardcoded category assumptions are introduced
+- trial and subscription expirations preserve seller data
+- contact-event review model remains intact
+- admin moderation actions keep working after product changes
 
-## 6. Definition of Done (Daily Checkpoint)
+## 7. Definition of Done
 
-The day is not complete unless the required validation checks are performed for the implementation that exists that day.
+The day is not complete unless the project-specific checks for that implementation are run and the evidence is recorded.
 
-Daily checkpoint concept:
+Required standard:
 
-Implementation where applicable
-→ TypeScript
-→ Lint
-→ Tests
-→ Build
-→ Manual test where required
-→ Business rule verification
-→ Git diff review
-→ Checkpoint
-→ Commit
+- failed required checks mean the day is not complete
+- skipped checks must be explicitly justified
+- no success claim should be made without actual execution evidence
 
-### Required standard
+## 8. Test Data and Isolation
 
-- A failed required check means the day is not complete.
-- A skipped required check must be explicitly justified and documented.
-- No success claim should be made without actual execution evidence.
+- test data must be isolated from production data
+- fixtures should model real business rules from the PRD and business rules documents
+- no test should validate a payment integration before the final payment phase
 
-## 7. Test Data and Isolation
+## 9. Performance and Non-Functional Testing
 
-- Test data should be isolated from production data.
-- Test fixtures should model the business rules in the PRD and Business Rules documents.
-- Test scenarios should reflect the Sana'a-only MVP and not assume broader market behaviors prematurely.
-- No test should validate a fictional Jaib integration path before the final payment phase.
+Future testing should include:
 
-## 8. Non-Functional Testing Considerations
-
-The project should eventually validate:
-
-- error resilience
-- service uptime expectations
-- database connectivity resilience
-- health endpoint behavior
-- log quality and situational usefulness
-- deployment rollback readiness
-- environment configuration safety
-
-## 9. Testing Priorities by Phase
-
-### Phase 1 priority
-
-- store create/activate rules
-- product create/activate rules
-- service create/activate rules
-- trial expiry visibility rules
-- seller data preservation rules
-- review eligibility based on Contact Event
-- admin moderation actions
-- permissions and authorization checks
-
-### Phase 2 priority
-
-- search relevance and discover ranking behavior
-- notification generation
-- category management
-- seller dashboard workflows
-- admin dashboard workflows
-
-### Final payment phase priority
-
-- payment domain readiness
-- provider abstraction boundaries only when applicable
-- no Jaib-specific API contract tests before the final payment phase
+- response time measurement for public discovery and search endpoints
+- pagination behavior under large datasets
+- database index review for category and store queries
+- image optimization and lazy-loading review
+- cache invalidation strategy review for public listing data
+- rate limiting and abuse protection checks
+- health checks and operational monitoring
 
 ## 10. Documentation Rule
 
-The testing strategy must remain aligned with the product and architecture documents. It must not introduce unsupported assumptions or claim behaviors not defined by the PRD, Business Rules, or Architecture documents.
+The testing strategy must remain aligned with the PRD, business rules, architecture, and coding standards. It must not claim behaviors that have not been implemented or verified.

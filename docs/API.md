@@ -1,6 +1,6 @@
 # API Design
 
-This document defines the target API contract for Sana'a Marketplace. It is a design document only and does not implement application code, controllers, routes, or database schemas.
+This document defines the target API contract for the Sana'a Wedding Marketplace. It is a design document only and does not implement application code, routes, controllers, or database schemas.
 
 The intended API root is:
 
@@ -10,44 +10,43 @@ All conceptual paths below are relative to this base path.
 
 ## 1. API Scope and Principles
 
-- Public market pages and protected account features share the same backend API base.
-- The backend is the source of truth for business rules and permissions.
-- Frontend validation is considered convenience only; backend validation is authoritative.
-- API behavior must remain consistent with the PRD, Business Rules, Architecture, and Coding Standards documents.
-- No Jaib-specific contracts are included; any Jaib integration is deferred to the final payment phase.
+- Public discovery and protected account features share the same backend API base.
+- The backend remains the source of truth for business rules and permissions.
+- Frontend validation is convenience only; backend validation is authoritative.
+- API behavior must remain consistent with the PRD, business rules, architecture, and coding standards.
+- Jaib is intentionally excluded from this API design because payment integration remains deferred.
 
 ## 2. API Versioning
 
 - Base path: /api/v1
 - Versioning is path-based.
-- Versioning is intended to allow non-breaking evolution while preserving compatibility for public and seller/admin UIs.
-- Breaking API changes should be introduced by adding a new version rather than modifying the existing contract silently.
+- Breaking changes should be introduced by a new version rather than silently altering the existing contract.
 
 ## 3. HTTP Methods and Status Codes
 
-### Standard HTTP methods
+### Standard methods
 
-- GET: read/query data
+- GET: read/query records
 - POST: create resources or trigger actions
 - PATCH: partial update
-- PUT: full update where appropriate; use only when a full replace semantics is clearly required
-- DELETE: soft delete / archive / remove where appropriate; delete semantics should not be destructive for critical seller data unless explicitly justified and approved
+- PUT: full update where appropriate
+- DELETE: soft delete or archive where appropriate
 
 ### Status codes
 
-- 200 OK: successful read/update operation
-- 201 Created: resource created successfully
-- 202 Accepted: action accepted for later processing (when asynchronous or deferred behavior is used)
-- 204 No Content: successful operation with no response body
-- 400 Bad Request: malformed request or validation failure
-- 401 Unauthorized: missing or invalid authentication
-- 403 Forbidden: authenticated but not authorized for this action
-- 404 Not Found: resource missing or inaccessible
-- 409 Conflict: state conflict such as duplicate object, invalid state transition, or rule conflict
-- 422 Unprocessable Entity: semantically invalid input that passes syntax validation but fails business validation
-- 429 Too Many Requests: rate limit exceeded
-- 500 Internal Server Error: unexpected server-side failure
-- 503 Service Unavailable: dependency or service outage
+- 200 OK
+- 201 Created
+- 202 Accepted
+- 204 No Content
+- 400 Bad Request
+- 401 Unauthorized
+- 403 Forbidden
+- 404 Not Found
+- 409 Conflict
+- 422 Unprocessable Entity
+- 429 Too Many Requests
+- 500 Internal Server Error
+- 503 Service Unavailable
 
 ## 4. Response Conventions
 
@@ -80,47 +79,113 @@ All conceptual paths below are relative to this base path.
 
 ### Response expectations
 
-- Every response should include a success boolean.
-- Success responses should include data payloads where appropriate.
-- Error responses should include a stable machine-readable code, a human-readable message, and optional details.
-- The API should avoid leaking stack traces or internal implementation details to clients.
+- every response should include a success boolean
+- success responses should include data payloads where appropriate
+- error responses should include a stable machine-readable code and a readable message
+- internal stack traces should not be exposed to clients
 
 ## 5. Authentication and Authorization
 
 ### Authentication target
 
-- Architecture target: JWT + HTTP-only cookies
-- Public endpoints require no authentication.
-- Seller and admin endpoints require authenticated identity.
-- Auth tokens are expected to be validated server-side before protected actions are processed.
+- JWT + HTTP-only cookies
+- public endpoints require no authentication
+- seller and admin endpoints require authenticated identity
 
 ### Conceptual authentication behavior
 
-- POST /api/v1/auth/login: validate credentials and issue authenticated session cookie/token
-- POST /api/v1/auth/logout: revoke session or clear authentication cookie
-- GET /api/v1/auth/me: return current authenticated user summary
+- POST /api/v1/auth/login
+- POST /api/v1/auth/logout
+- GET /api/v1/auth/me
 
 ### Authorization model
 
-- Public: no authentication required
+- Public: anonymous discovery only
 - Customer: authenticated customer actions only
-- Seller: manages own stores, products, services, and subscription visibility context
-- Admin: manages moderation, categories, reports, reviews, subscriptions, payment records, and audit-related tasks
+- Seller: manages own stores, products, services, and subscription context
+- Admin: manages moderation, categories, reports, reviews, subscriptions, and audit-related tasks
 
 Protected endpoints must enforce authorization in the backend. Frontend role state must not be trusted.
 
-## 6. Validation and Error Taxonomy
+## 6. Resource and Endpoint Scope
 
-### Request validation errors
+### Stores
+
+- GET /api/v1/stores
+- GET /api/v1/stores/:id
+- POST /api/v1/stores
+- PATCH /api/v1/stores/:id
+- DELETE /api/v1/stores/:id
+
+### Categories
+
+- GET /api/v1/categories
+- GET /api/v1/categories/:id
+- POST /api/v1/categories
+- PATCH /api/v1/categories/:id
+- DELETE /api/v1/categories/:id
+
+Category endpoints support dynamic taxonomy management, activation state, ordering, and optional parent/child relationships.
+
+### Products
+
+- GET /api/v1/products
+- GET /api/v1/products/:id
+- POST /api/v1/products
+- PATCH /api/v1/products/:id
+- DELETE /api/v1/products/:id
+
+### Services
+
+- GET /api/v1/services
+- GET /api/v1/services/:id
+- POST /api/v1/services
+- PATCH /api/v1/services/:id
+- DELETE /api/v1/services/:id
+
+### Reviews
+
+- GET /api/v1/reviews
+- GET /api/v1/reviews/:id
+- POST /api/v1/reviews
+- PATCH /api/v1/reviews/:id
+- DELETE /api/v1/reviews/:id
+
+### Reports
+
+- GET /api/v1/reports
+- GET /api/v1/reports/:id
+- POST /api/v1/reports
+- PATCH /api/v1/reports/:id
+
+### Notifications
+
+- GET /api/v1/notifications
+- PATCH /api/v1/notifications/:id/read
+
+### Subscriptions and trial state
+
+- GET /api/v1/subscriptions
+- PATCH /api/v1/subscriptions/:id
+- GET /api/v1/trials/:storeId
+
+### Contact events
+
+- POST /api/v1/contact-events
+- GET /api/v1/contact-events
+
+## 7. Validation and Error Taxonomy
+
+### Validation errors
 
 - invalid field values
 - missing required fields
 - malformed IDs
 - malformed dates
-- invalid enums or status values
+- invalid enums
 - unsupported query parameters
 
-Conceptual error code examples:
+Conceptual codes:
 
 - VALIDATION_ERROR
 - INVALID_FIELD
@@ -131,18 +196,18 @@ Conceptual error code examples:
 
 ### Business errors
 
-- subscription expired or inactive while attempting to publish or maintain public visibility
-- store hidden or suspended preventing modification
+- subscription expired or inactive
+- store hidden or suspended
 - product limit exceeded
-- review not eligible based on Contact Event rules
-- store/product/service not owned by current seller
-- seller cannot access admin-only action
+- review not eligible
+- seller does not own the requested record
+- admin-only action attempted by non-admin user
 
-Conceptual error codes:
+Conceptual codes:
 
 - STORE_SUSPENDED
-- PRODUCT_LIMIT_EXCEEDED
 - SUBSCRIPTION_INACTIVE
+- PRODUCT_LIMIT_EXCEEDED
 - REVIEW_NOT_ELIGIBLE
 - OWNERSHIP_REQUIRED
 - BUSINESS_RULE_VIOLATION
@@ -156,60 +221,45 @@ Conceptual error codes:
 - missing user
 - missing notification
 
-Conceptual error codes:
+Conceptual codes:
 
 - RESOURCE_NOT_FOUND
 - STORE_NOT_FOUND
 - PRODUCT_NOT_FOUND
 - SERVICE_NOT_FOUND
+- CATEGORY_NOT_FOUND
 - USER_NOT_FOUND
 
 ### Conflict errors
 
-- duplicate favorite entry
+- duplicate favorite
 - duplicate report
-- invalid state transition such as reactivating an already active record
-- store already suspended or closed
-- review already submitted for same contact event
+- invalid state transition
+- already suspended or closed state
 
-Conceptual error codes:
+Conceptual codes:
 
 - CONFLICT
 - DUPLICATE_FAVORITE
 - DUPLICATE_REPORT
 - INVALID_STATE_TRANSITION
 
-### Internal errors
+## 8. Pagination Contract
 
-- unexpected exception
-- dependency failure
-- database error
-- external provider failure when applicable in future phases
+A consistent pagination contract should be used across public and admin list endpoints.
 
-Conceptual error codes:
-
-- INTERNAL_ERROR
-- DATABASE_ERROR
-- DEPENDENCY_ERROR
-
-## 7. Pagination Contract
-
-A single consistent pagination contract should be used across public and admin list endpoints.
-
-### Conceptual pagination request
+### Conceptual request
 
 - page: integer, default 1
-- limit: integer, default 20, max value to be enforced by server
-- sort: sort field or sort mode
+- limit: integer, default 20
+- sort: field or mode
 - order: asc | desc
 
-### Conceptual pagination response
+### Conceptual response
 
 {
 "success": true,
-"data": [
-{}
-],
+"data": [],
 "meta": {
 "page": 1,
 "limit": 20,
@@ -220,33 +270,27 @@ A single consistent pagination contract should be used across public and admin l
 }
 }
 
-### Pagination rules
+Pagination rules:
 
-- Applies to stores, products, services, search results, discover pages, notifications, and admin lists.
-- Pagination is server-driven and should not rely on frontend assumptions.
-- A maximum page size should be enforced by the backend.
-- Undefined or invalid page values should return validation errors.
+- apply to stores, products, services, review lists, reports, and notifications
+- use server-driven pagination
+- enforce a maximum page size
 
-## 8. Filtering and Sorting Conventions
+## 9. Filtering and Sorting Conventions
 
 ### Filtering
-
-Conceptual filters available where applicable:
 
 - category
 - location
 - priceMin / priceMax
 - availability
-- type
 - status
-- sellerId
 - storeId
+- sellerId
 - createdAfter / createdBefore
 - isActive
 
 ### Sorting
-
-Conceptual sort values:
 
 - newest
 - relevance
@@ -256,7 +300,17 @@ Conceptual sort values:
 - name_asc
 - name_desc
 
-### Unresolved details
+## 10. Future API Considerations
+
+The current phase should not invent payment provider contracts or a final booking engine API. The API should remain ready for:
+
+- dynamic categories and parent-child category relationships
+- review moderation and report workflows
+- notifications and email/in-app delivery options
+- subscription and trial visibility enforcement
+- future marketplace analytics and search improvements
+
+These should be added only when the relevant business decisions are made.
 
 The following details remain intentionally unresolved in current documentation and should be clarified before implementation:
 

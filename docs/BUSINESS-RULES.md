@@ -1,414 +1,313 @@
 # Business Rules
 
-This document defines the authoritative business rules for Sana'a Marketplace. It complements the product requirements in [docs/PRD.md](PRD.md) and should be treated as the operational interpretation of the product rules.
+This document defines the authoritative business rules for the Sana'a Wedding Marketplace. It complements the product requirements in [docs/PRD.md](PRD.md) and should be treated as the operating interpretation of the product rules while preserving the existing marketplace and admin framework already in the repository.
 
 ## 1. Product and Market Scope
 
-- Product type: web platform, not mobile application.
+- Product type: web platform, not a standalone mobile application.
 - Initial launch market: Sana'a, Yemen only.
-- Future geographic growth is allowed, but the MVP is limited to Sana'a.
-- Public marketplace discovery is a primary product function.
-- Seller-to-customer contact remains primarily external to the platform through seller-managed channels.
-- The platform acts as a discovery and marketplace layer, not as a private messaging platform.
+- Future geographic expansion is allowed, but the MVP remains local to Sana'a.
+- Public browsing is a primary product experience.
+- Seller-to-customer contact remains external to the platform via seller-managed communication channels.
+- The platform acts as a discovery and storefront layer rather than a private messaging app.
 
 ## 2. Customer Rules
 
 ### 2.1 Public browsing
 
 - Any visitor may browse the public marketplace without creating an account.
-- Public browsing includes viewing storefronts, products, services, offers, category pages, and discovery surfaces where visible.
-- Public browsing must remain available without login.
-- Public marketplace pages must support SEO where appropriate and where business policy allows.
+- Public browsing includes storefronts, product listings, services, offers, categories, and wedding-focused discovery pages where visible.
+- Public marketplace browsing must continue to work without login.
+- Public pages should support SEO where appropriate and permitted by platform policy.
 
 ### 2.2 Authentication requirements
 
 - Authentication is required for identity-linked actions.
-- Authentication is required for features such as favorites, reviews, reports, personal notifications, and account management.
-- Seller and admin accounts require explicit role-based access.
+- Examples include favorites, reviews, reports, personal notifications, and account management.
+- Sellers and admins require dedicated, role-based access.
 - Customers are not required to authenticate for general discovery.
 
 ### 2.3 Favorites
 
 - Favorites are a customer account feature.
-- Logged-in customers may save favorite products, stores, and services.
-- Favorites are user-specific and not publicly visible unless explicitly designed otherwise in future product iterations.
-- Favorites do not replace a seller’s public storefront listing and do not grant access to private data.
+- Logged-in customers may save favorite vendors, products, and services.
+- Favorites must remain user-specific and not publicly visible unless designed otherwise in future work.
 
 ### 2.4 Reviews
 
 - Reviews are not based on Verified Purchase.
-- Review eligibility is based on a Contact Event according to future business rules.
-- The operational concept is: Customer contacts seller → Contact Event recorded → customer becomes eligible to review according to business rules.
-- Reviews must not be treated as verified purchase proof.
-- Review moderation and reporting remain admin responsibilities.
+- Eligibility is based on contact events and business rules executed by the backend.
+- Customer contact with a seller creates a contact event, which may later support review eligibility.
+- Reviews remain subject to moderation and reporting.
 
 ### 2.5 Reports
 
-- Authenticated users may report suspicious, misleading, illegal, harmful, or inappropriate listings or behavior.
-- Admins are responsible for reviewing and acting on reports.
-- Reported entities may include stores, products, services, reviews, or other relevant marketplace content.
-- Reports must be associated with the reported entity and reason metadata.
+- Authenticated users may report suspicious, inaccurate, or inappropriate listings or behavior.
+- Admins review and resolve reports.
+- Reports can be raised against stores, products, services, reviews, or other relevant wedding marketplace content.
 
 ### 2.6 Contact events
 
-- The system records contact events when a customer initiates or completes contact with a seller using supported channels.
-- Supported conceptual contact channels include:
-  - WhatsApp
-  - Instagram
-  - Facebook
-  - TikTok
-  - Telegram
-  - Website
-  - Phone
-  - Other relevant business contact channels
-- The platform must record the event as a business fact, not as a private conversation inspection mechanism.
-- The system must not inspect or attempt to read private conversations from external platforms.
-- Contact events are a business record supporting future eligibility rules for reviews and trust-related features.
+- The system records contact events when a customer initiates or completes contact with a seller through supported channels.
+- Supported conceptual channels include WhatsApp, Instagram, Facebook, Telegram, phone, website, and other seller-managed channels.
+- The platform records the business contact event, but does not inspect private conversations on external platforms.
 
 ## 3. Seller Rules
 
 ### 3.1 Seller account
 
-- A seller must have an account to create and manage store-related operations.
-- Seller accounts are distinct from customer accounts and admin accounts.
-- Seller account access must support storefront management, listing operations, and notification consumption.
+- A seller must have an account to create and manage store operations.
+- Seller accounts are separate from customer and admin accounts.
+- Seller access supports storefront management, listing operations, and notification consumption.
 
 ### 3.2 Store ownership
 
-- Sellers own their own store records and associated product/service listings for which they are authorized.
-- Ownership must be restricted by authorization rules and role permissions.
-- A seller may not modify a store or listing they do not own.
-- Administrative actions may supersede regular seller actions in moderation cases.
+- Sellers own the stores and associated listings they are authorized to manage.
+- Ownership must be enforced by role and authorization rules.
+- A seller may not edit a store or listing they do not own.
+- Admin actions may supersede regular seller editing when moderation requires it.
 
 ### 3.3 Store management
 
-- Sellers can create, edit, manage, and maintain store records.
-- Stores must contain the information required for public browsing and buyer contact.
-- Store contact channels are seller-managed and external to the core platform messaging layer.
-- Seller-managed store detail changes must be reflected in the public listing according to the store’s status and visibility rules.
+- Sellers can create, edit, and maintain wedding-related store records.
+- Store profiles must include the fields needed for discovery and direct customer contact.
+- Contact channels remain seller-managed and external to the platform’s core message layer.
 
-### 3.4 Products
+### 3.4 Products and services
 
-- Sellers may create products associated with their authorized store.
-- Product creation occurs under seller ownership and seller-managed store association.
-- Product price, category, availability, and related metadata are seller-controlled, subject to moderation and business policy.
-- Product visibility must remain consistent with active store status, subscription/trial state, and moderation actions.
+- Sellers may create products and services associated with their authorized store.
+- Products and services are created under seller ownership and store association.
+- Product and service metadata must support discovery, category placement, pricing, and direct contact.
+- Visibility must remain consistent with active store status, subscription or trial state, and moderation actions.
 
-### 3.5 Services
+### 3.5 Subscription
 
-- Sellers may create services associated with their authorized store.
-- Services follow the same lifecycle model as products with respect to activation, moderation, visibility, and suspension.
-- Service metadata must include the business information required for discovery and contact.
+- Seller subscriptions are required to keep public access under the current business model.
+- Current business value: 2500 YER per month.
+- Current product limit: 250 listings per store or account.
+- These values remain the current product defaults but must eventually come from the database instead of code.
 
-### 3.6 Subscription
-
-- Seller subscriptions are required to maintain public access under the current business model.
-- The current business value in the PRD is 2500 YER per month.
-- The current product limit in the PRD is 250 products.
-- These values are treated as current business defaults but must eventually come from database configuration instead of being hardcoded in business logic.
-- Subscription and plan values are domain entities intended to be managed from the database from early stages.
-
-### 3.7 Trial
+### 3.6 Trial
 
 - Sellers receive a 60-day free trial when the store becomes active.
-- Trial begins when the store becomes active.
-- Trial duration is an active business rule and is not a substitute for a paid subscription.
+- Trial starts when the store becomes active.
 - Trial expiration must not delete seller data.
-- If the trial expires, the seller’s public-facing content must be hidden according to visibility rules pending reactivation or renewal.
+- When the trial expires, public-facing visibility may be hidden until the subscription is active again.
 
-### 3.8 Notifications
+### 3.7 Notifications
 
-- Sellers receive notifications for relevant platform events, including:
+- Sellers receive operational notifications for events such as:
   - store creation
-  - subscription and trial status changes
+  - trial and subscription changes
   - admin notes
-  - moderation actions affecting their content
-  - operational notices relevant to their store or listings
-- Notifications are role-aware and should eventually support channels such as in-app, email, or other delivery mechanisms as appropriate.
+  - moderation actions
+  - other relevant store updates
 
 ## 4. Store Business Rules
 
 ### 4.1 Store creation
 
 - Sellers may create a store under their authenticated seller account.
-- Store creation is allowed without admin approval in the initial business model.
+- Store creation is allowed without admin approval in the initial model.
 - Store creation triggers admin notification.
-- Store creation is not blocked by a pre-approval workflow.
 
 ### 4.2 Immediate activation
 
-- A newly created store becomes ACTIVE immediately.
+- Newly created stores become ACTIVE immediately.
 - Immediate activation is a core product rule and must not be changed silently.
-- The store becomes publicly discoverable subject to visibility and moderation rules.
 
 ### 4.3 No pre-approval workflow
 
-- There is no admin pre-approval workflow for stores.
-- Stores are created and activated immediately.
-- Admin intervention is post-publication rather than pre-publication.
+- There is no admin pre-approval workflow for store creation.
+- Admin intervention happens after publication.
 
 ### 4.4 Store status values
 
-The following conceptual status values are relevant:
+The following status values are conceptually relevant:
 
 - ACTIVE
 - SUSPENDED
 - CLOSED
-- Hidden/inactive due to subscription or trial expiration (visibility state, not necessarily data deletion)
+- hidden or inactive due to subscription or trial expiration
 
 ### 4.5 Admin intervention
 
-- Admin may view stores.
-- Admin may send notes to sellers.
-- Admin may suspend a store.
-- Admin may close a store.
-- Admin may reactivate a store.
-- Admin actions may change public visibility or store operational status.
+- Admin may view, send notes to, suspend, close, or reactivate stores.
+- Admin actions may alter public visibility or store operational status.
 
 ### 4.6 Public visibility
 
-- A store is publicly visible when it is active and the store is otherwise permitted to appear.
-- Public visibility depends on active store status, moderation state, and subscription/trial state.
-- Content may become hidden when a subscription or trial expires.
-- Hidden content must retain seller data and storage records.
+- A store is publicly visible when it is active and otherwise eligible to appear.
+- Visibility depends on store state, moderation state, and subscription or trial status.
+- Content may be hidden when a subscription or trial expires.
 
 ### 4.7 Subscription visibility behavior
 
 - When a subscription or trial expires, the store may become hidden from public access.
-- Products and services associated with the expired store should also be hidden where required.
-- Seller data must not be deleted as a result of expiration.
-- Once the subscription becomes active again, the store may become publicly visible according to business rules.
+- Related products and services should also be hidden where required.
+- Seller data is preserved even when public visibility is removed.
 
-## 5. Product Business Rules
+## 5. Product and Service Business Rules
 
 ### 5.1 Product creation
 
-- Sellers can create products associated with a valid store.
+- Sellers can create wedding-related products under a valid store.
 - Product creation is permitted under seller ownership and authorization.
 - Product creation triggers admin notification in the business model.
 
-### 5.2 Immediate activation
+### 5.2 Product activation
 
-- Product becomes ACTIVE immediately upon creation.
-- Immediate activation is a core business rule.
-- No admin pre-approval workflow exists for products.
+- Products become ACTIVE immediately on creation.
+- No admin pre-approval workflow is required.
 
-### 5.3 Ownership and association
+### 5.3 Service creation
 
-- Products belong to the associated seller and store.
-- A seller may not manage products outside their authorized store ownership.
-- Product records remain associated with the store even if store visibility changes later.
+- Sellers can create services under an authorized store.
+- Services become ACTIVE immediately.
+- Admin can later intervene via moderation and visibility controls.
 
-### 5.4 Categories
+### 5.4 Ownership and association
+
+- Products and services remain associated with their store and seller.
+- A seller may not manage content outside their authorized store ownership.
+
+### 5.5 Categories
 
 - Categories are dynamic and admin-managed.
-- Product categorization must not be hardcoded.
-- Admins can create and maintain category taxonomy over time.
+- Wedding categories must not be hardcoded into the application façade or frontend.
+- Admins can create, enable, disable, reorder, and manage category taxonomy over time.
+- Subcategories and category-specific custom fields may be introduced later as a domain configuration problem, not as a hardcoded UI list.
 
-### 5.5 Price
+### 5.6 Price and availability
 
-- Products may have price metadata consistent with the seller’s local business rules.
-- Price is part of the marketplace listing data and must be validated before use in public display.
-
-### 5.6 Availability
-
-- Product availability is seller-managed and must be visible in product metadata where relevant.
-- Availability may affect public listing behavior and customer purchase intent.
+- Price metadata and availability must remain seller-managed and backend-validated.
+- Availability and listing status influence customer trust and discoverability.
 
 ### 5.7 Product limit
 
-- The current business value is 250 products per seller store or business account in the current plan as defined by the product requirements.
-- The product limit must eventually be driven by database configuration and not hardcoded in business logic.
+- The current business value is 250 listings per seller store or business account.
+- This value must be configurable in the data layer rather than hardcoded in code.
 
-### 5.8 Suspension, removal, reactivation
+### 5.8 Suspension and reactivation
 
-- Admin may suspend a product.
-- Admin may remove a product.
-- Admin may reactivate a product.
-- Product visibility must be consistent with store status, moderation state, and subscription visibility rules.
+- Admin may suspend or remove a product or service.
+- Admin may reactivate it when the moderation or business rule allows it.
 
-## 6. Service Business Rules
+## 6. Subscription and Trial Rules
 
-Services mirror the same lifecycle model as products with the following rule set:
+### 6.1 Subscription plan
 
-- Seller creates service under an authorized store.
-- Service becomes ACTIVE immediately.
-- No admin pre-approval workflow is used.
-- Admin can later intervene via moderation actions.
-- Service status may be ACTIVE, suspended, hidden, or removed depending on moderation and visibility rules.
-- Service visibility must respect the supporting store’s active status and subscription/trial state.
-- Seller data associated with the service must be preserved even when the service is hidden or removed.
+- The platform supports a subscription domain model from early stages.
+- Current plan value: 2500 YER/month.
+- Current product limit: 250 listings.
+- The real configuration should eventually come from the database and not from fixed code.
 
-## 7. Subscription and Trial Rules
+### 6.2 Trial lifecycle
 
-### 7.1 Subscription plan
+- Sellers receive a 60-day free trial when the store becomes active.
+- Trial duration must be tracked and visible to the seller and admin.
+- Expired trial may require hiding public content until a subscription becomes active again.
 
-- The platform is intended to support a subscription domain model from early stages.
-- The database should support subscription plans, subscription records, and payment records.
-- Current plan value in the PRD: 2500 YER/month.
-- Current product limit in the PRD: 250 products.
-- These values must eventually be database-driven rather than hardcoded into application logic.
-
-### 7.2 Trial lifecycle
-
-- Sellers receive a 60-day free trial.
-- Trial begins when the store becomes active.
-- Trial status should be tracked and visible to the seller and admin.
-- Expired trial may require public content to be hidden until a subscription becomes active again.
-- Trial expiration must not delete seller data.
-
-### 7.3 Subscription lifecycle
-
-- Subscription lifecycle includes plan assignment, activation, status tracking, expiration, and reactivation.
-- Subscription status must be authoritative in the backend and not trusted from frontend state.
-- Subscription status controls public visibility and seller access to certain features where relevant.
-
-### 7.4 Expiration
+### 6.3 Expiration
 
 - Expiration of trial or subscription may hide public listings and store visibility.
-- The system should preserve seller records and marketplace metadata rather than deleting data.
-- Expiration does not imply account deletion or merchant data erasure.
+- Data must not be deleted merely because a plan has expired.
 
-### 7.5 Data preservation
+### 6.4 Public visibility rules
 
-- Seller accounts, store records, products, and services must not be deleted merely because trial or subscription expiration occurs.
-- Preservation is preferred for auditability, business continuity, and compliance with marketplace operational expectations.
+- When a subscription or trial expires, a store or listing may become hidden from public access.
+- Once active again, public visibility may be restored according to business rules.
 
-### 7.6 Public visibility rules
+## 7. Reviews, Contact Events, and Reports
 
-- If a subscription expires, public visibility may be removed from the store and associated listing objects.
-- If a subscription becomes active again, public visibility can be restored according to business rules.
-- Paid subscription alone must not automatically guarantee top ranking in search or discovery.
+### 7.1 Review eligibility
 
-## 8. Reviews, Contact Events, and Reports
+- Review eligibility is based on contact events, not Verified Purchase.
+- The workflow is: customer contact → contact event recorded → review eligibility checked under business rules.
 
-### 8.1 Review eligibility
+### 7.2 Contact tracking
 
-- Review eligibility is based on Contact Event records.
-- The conceptual flow is: customer contact → contact event recorded → future business rules determine review eligibility.
-- Reviews are not based on Verified Purchase.
+- The platform records business contact events with sellers.
+- Contact channels remain external and seller-managed.
+- The system does not inspect private conversations in external social channels.
 
-### 8.2 Contact tracking
-
-- Contact tracking is required for business trust and future review logic.
-- Seller contact channels may include social media handles, phone numbers, websites, and direct business contact information.
-- The system records the business contact event and must not inspect private external conversations.
-- Contact tracking data must be accurate, consent-aware, and operationally limited to marketplace business purposes.
-
-### 8.3 Reporting rules
+### 7.3 Reporting rules
 
 - Reports may be raised against stores, products, services, reviews, or other content where applicable.
-- Reports should include a reason, content reference, and enough metadata for moderation review.
-- Reports may be handled by admins according to moderation policy.
-- Reporting is not a substitute for direct external platform moderation and must remain consistent with the marketplace’s operational boundaries.
+- Reports include reason and relevant reference metadata.
+- Admins review and act on reports according to moderation policy.
 
-## 9. Search and Discovery Rules
+## 8. Search, Discovery, and Categories
 
-### 9.1 Search
+### 8.1 Search
 
-- Customers should be able to search across products, services, stores, offers, and categories.
-- Search is expected to support keyword-based discovery and category-driven navigation.
-- Search results should prefer relevance and local context.
-- Paid subscription alone must not automatically guarantee top ranking.
+- Customers can search across stores, products, services, offers, and categories.
+- Search should prefer relevance and local context.
+- Paid plans should not automatically guarantee top ranking.
 
-### 9.2 Discover
+### 8.2 Discovery
 
-- Discovery surfaces should support concepts such as:
-  - All
-  - Products
-  - Services
-  - Stores
-  - Offers
-  - New
-  - Popular
-  - Nearby
-- Discovery must remain available to public users without login.
-- Ranking should not be driven solely by paid subscriptions.
+- Discovery surfaces should support concepts such as All, Products, Services, Stores, Offers, New, Popular, and Nearby.
+- Public discovery must remain available without login.
 
-## 10. Categories and Locations
+### 8.3 Dynamic categories policy
 
-### 10.1 Categories
+- Category management is admin-driven and data-backed.
+- No static category list should be embedded in the product interface or business logic as a replacement for the real data model.
+- A category can be added, renamed, reordered, deactivated, or nested without a code change or redeploy.
 
-- Categories are dynamic.
-- Admin manages the category taxonomy.
-- Categories are not assumed to be hardcoded in the product code.
-- Categories apply to stores, products, services, and discovery surfaces.
+## 9. Moderation, Admin Notes, and Auditability
 
-### 10.2 Locations
+### 9.1 Moderation
 
-- The MVP is limited to Sana'a.
-- The architecture should allow future expansion beyond Sana'a, but all MVP business rules assume Sana'a as the core market.
-- Location metadata should support local discovery in Sana'a and future city expansion.
-
-## 11. Moderation, Admin Notes, and Auditability
-
-### 11.1 Moderation
-
-- There is no pre-approval workflow for store creation, product creation, or service creation.
+- There is no pre-approval workflow for stores, products, or services.
 - Admin moderation occurs after publication.
-- Administrative intervention may include notes, suspension, closure, removal, or reactivation.
-- Moderation actions must respect visibility and subscription rules.
+- Moderation actions may include notes, suspension, closure, removal, or reactivation.
 
-### 11.2 Admin notes
+### 9.2 Soft deletion and preservation
 
-- Admin may send moderation or management notes to sellers where relevant.
-- Notes are operational records and should be visible to the seller in the seller dashboard.
-- Notes should support communication without forcing a complete approval workflow.
+- Seller data must be preserved when content becomes hidden or removed from public display.
+- The platform should prefer soft deletion and visibility changes instead of destructive deletion where historical or operational value exists.
 
-### 11.3 Soft deletion and preservation
+### 9.3 Audit logging
 
-The platform should prefer preservation and soft deletion for conceptual records where appropriate, including:
-
-- Seller accounts and profile data
-- Stores after suspension or closure
-- Products and services after removal or hidden status
-- Subscription records and payment records for audit and reconciliation
-- Reports and review records that may be needed for moderation history
-- Audit log entries and admin actions
-
-The design should avoid destructive deletion of seller data when operational visibility ends.
-
-### 11.4 Audit logging
-
-The system should eventually capture auditable actions including:
+The system should eventually log actions including:
 
 - store creation and status changes
-- product and service creation, updates, suspension, removal, reactivation
-- admin notes and moderation decisions
+- product and service creation or moderation
+- admin notes
 - subscription and trial changes
-- payment record state changes
-- report creation and resolution
-- review creation and moderation action
+- report and review actions
 - category management changes
-- user and account role changes
+- user and permissions changes
 
-## 12. Customer, Seller, and Admin Access Summary
+## 10. Customer, Seller, and Admin Access Summary
 
 - Customers may access public marketplace pages without login.
-- Customers must authenticate for favorites, reviews, reports, and account-linked actions.
-- Sellers must authenticate to create and manage stores, products, and services.
-- Admins must authenticate and have elevated permissions to manage moderation, subscriptions, categories, reports, notifications, and audit records.
-- Backend permission enforcement is the source of truth for authorization and business policy.
+- Customers authenticate for favorites, reviews, reports, and account-linked actions.
+- Sellers authenticate to manage storefronts and listings.
+- Admins authenticate to manage moderation, categories, and subscriptions.
+- Backend authorization remains the source of truth.
 
-## 13. Operational Notes and Constraints
+## 11. Operational Constraints
 
-- Subscription and trial values must not be hardcoded into main business logic indefinitely.
+- Subscription and trial values must not remain permanently hardcoded in business logic.
 - Categories must not be hardcoded.
-- Business configuration belongs in the database, not in fixed application code.
-- The system must not inspect or parse private external social media conversations.
-- The platform does not implement Jaib in this phase and must not invent Jaib endpoints or API behavior.
-- The platform keeps a clear separation between public discovery, seller operations, and admin operations.
+- Business configuration belongs in the data layer and admin-managed configuration rather than fixed code.
+- The platform does not inspect private conversations on external social channels.
+- Jaib integration remains outside the current phase and must not be invented prematurely.
+- Clear separation remains necessary between public discovery, seller actions, and admin functions.
 
-## 14. Canonical Rule Clarification
+## 12. Canonical Rule Clarification
 
-The PRD currently establishes the canonical business values for the MVP as:
+The current canonical product rules for this project are:
 
 - 2500 YER/month subscription price
-- 250 product limit
+- 250 listing limit
 - 60-day free trial
 - Sana'a-only market scope
 - no pre-approval workflow
-- immediate activation by store/product/service
-- data preservation on expiration
+- immediate activation by store, product, or service
+- data preservation on visibility or subscription expiration
 
-This document treats these values as the current authoritative product rules unless they are explicitly changed by product governance.
+These values are the operating defaults unless product governance explicitly changes them.

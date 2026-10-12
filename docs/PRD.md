@@ -1,52 +1,67 @@
 # Product Requirements Document (PRD)
 
-# Sana'a Marketplace
+# Sana'a Wedding Marketplace
 
 ## 1. Product Overview
 
-Sana'a Marketplace is a web-based marketplace and discovery platform for the city of Sana'a, Yemen. The platform connects customers with local sellers and service providers who currently market themselves through external channels such as Instagram, Facebook, WhatsApp, TikTok, Telegram, websites, and other direct communication tools. The product is designed to centralize local discovery, improve visibility for sellers, and make it easier for customers to find businesses, products, services, and offers in one place.
+Sana'a Wedding Marketplace is a web-based discovery and booking platform focused on wedding preparations in Sana'a, Yemen. It brings together wedding vendors, service providers, and product sellers under one searchable marketplace so customers can discover stores, compare offers, and contact businesses through the communication channels they already use.
 
-The MVP is intentionally limited to Sana'a and is designed to support a future multi-city or broader geographic expansion without requiring a full platform redesign. The product is not a mobile app; it is a web platform with public-facing marketplace pages and separate internal areas for sellers and administrators.
+The product is not a standalone mobile app. It is a public web platform with dedicated areas for customer discovery, seller storefront management, and admin moderation. The initial scope remains Sana'a only, but the architecture supports future regional expansion without redesigning the product around a fixed city or vendor list.
 
-The platform is primarily a discovery marketplace. Customers browse public content, search for products and services, view store profiles, discover offers, and then contact sellers through the seller-provided communication channels. The product does not require the customer to create an account to browse the public marketplace, but account-based features such as favorites, reviews, reports, personal notifications, and identity-linked actions require authentication and user identity.
+The platform supports a broad wedding ecosystem, including but not limited to:
+
+- hair and beauty studios and makeup centers
+- bridal gowns and wedding fashion stores
+- accessories and jewelry
+- perfumes and fragrance boutiques
+- clothing and tailoring shops
+- wedding halls and event venues
+- event planners and coordinators
+- wedding decor and venue setup providers
+- invitation printing and stationery shops
+- catering and hospitality providers
+- singers and performers
+- photography and videography teams
+- any additional wedding-related categories that may be added later
+
+The marketplace is designed to help customers quickly find the right vendor and contact them through the communication channels listed on the storefront, without forcing them to create an account before browsing.
 
 ---
 
 ## 2. Problem Statement
 
-Many local businesses and service providers in Sana'a rely on fragmented social media and messaging channels to market their offerings. This creates several challenges:
+The wedding-related market in Sana'a is still fragmented across Instagram, WhatsApp, Facebook, Telegram, direct phone calls, and isolated websites. This creates several issues:
 
-- Customers struggle to discover trustworthy local stores and service providers in one place.
-- Sellers lack a structured, searchable presence that is independent of social media platforms.
-- There is no single local marketplace that organizes categories, store information, product listings, services, and offers.
-- Store and seller visibility is fragmented across Instagram, Facebook, WhatsApp, TikTok, Telegram, and other channels.
-- Customers cannot easily compare offerings or find businesses based on category, location, date, or popularity.
-- Sellers often have no reliable way to manage subscriptions, store visibility, and content lifecycle in one place.
-- Moderation and administrative oversight are difficult when content lives across multiple unmanaged channels.
+- Customers struggle to discover trusted wedding vendors in one place.
+- Wedding businesses do not have a stable searchable storefront independent of social media.
+- The category structure changes often as new wedding-related services appear.
+- Customers cannot easily compare offer quality, style, pricing, and availability.
+- Sellers have no unified way to manage public visibility, store information, and subscription status.
+- Moderation is difficult when content is spread across unmanaged channels.
 
-The marketplace addresses this by creating a centralized, searchable distribution layer for local commerce and services, while still preserving seller-led communication via their preferred contact channels.
+The platform solves this by centralizing discovery for a wedding ecosystem while preserving the seller's chosen communications, such as WhatsApp, Instagram, Facebook, Telegram, phone, or an external website.
 
 ---
 
 ## 3. Proposed Solution
 
-Sana'a Marketplace will provide a public web marketplace where customers can discover stores, products, services, offers, categories, and local businesses in Sana'a. Sellers can create and manage storefronts, add products and services, manage contact channels, and maintain store information. Administrators can moderate stores, products, services, categories, reports, reviews, subscriptions, and platform content after publication.
+Sana'a Wedding Marketplace provides a public web marketplace where customers can discover wedding stores, products, services, and related offers. Sellers can create and manage storefronts, publish wedding-related products and services, and maintain their public profile and contact information. Administrators can moderate content, manage categories, track reports and reviews, and monitor subscriptions and store visibility.
 
-The product follows a lightweight marketplace model:
+The platform follows a lightweight marketplace model:
 
-- Public browsing is available without login.
-- Seller accounts are required for managing stores and inventory.
-- Customer accounts are required for features that involve identity and personalization.
-- Admin accounts manage moderation, listings, categories, subscriptions, reports, audit data, and platform operations.
-- Seller contact details remain external to the platform; the platform helps customers discover and initiate contact, but does not replace the seller's communication methods.
+- public browsing is available without login
+- seller accounts are required for managing stores and listings
+- customer accounts are required for identity-linked actions
+- admin accounts oversee moderation, categories, reports, subscriptions, and operational health
+- seller contact details remain external to the platform and are managed by the store owner
 
-The platform will support SEO-friendly public pages to improve search discoverability where appropriate, while maintaining a clear separation between public marketplace pages, seller dashboard workflows, and admin dashboard functions.
+The platform supports SEO-friendly public pages and clear separation between public discovery, seller dashboard workflows, and admin operations.
 
 ---
 
 ## 4. Product Vision
 
-To become Sana'a’s trusted, searchable, and accessible local marketplace for products, services, and businesses—while enabling sellers to manage a digital storefront and allowing customers to discover and connect with trusted local providers efficiently.
+To become Sana'a’s trusted destination for discovering and comparing wedding vendors, products, and services—while helping businesses manage a digital storefront and enabling customers to find the right partner for their event with confidence and speed.
 
 ---
 
@@ -54,41 +69,39 @@ To become Sana'a’s trusted, searchable, and accessible local marketplace for p
 
 ### Business Goals
 
-- Create a reliable local marketplace for Sana'a, Yemen.
-- Increase seller visibility and customer discovery.
-- Support a frictionless browsing and search experience for local products and services.
-- Provide a clear public discovery platform without requiring user login for basic browsing.
-- Establish a sustainable subscription model for sellers.
-- Provide an operational moderation and audit framework for administrators.
+- create a reliable wedding marketplace for Sana'a, Yemen
+- increase discovery of local wedding vendors and services
+- support a clear, searchable buying journey for wedding preparation needs
+- keep public browsing easy without requiring login
+- maintain a sustainable seller subscription model
+- provide a moderation and operational framework for admin oversight
 
 ### User Goals
 
-- Customers can quickly discover local products, services, and stores.
-- Sellers can manage their store and listings from a centralized dashboard.
-- Admins can moderate listings, manage subscriptions, and handle reports and reviews.
+- customers can discover wedding-related stores and services quickly
+- sellers can manage their storefront and offerings from one dashboard
+- admins can moderate categories, listings, reports, and subscriptions
 
 ### Product Goals
 
-- Ship a focused MVP for Sana'a only.
-- Support dynamic categories and flexible geographic expansion later.
-- Keep public pages SEO-friendly and indexable where appropriate.
-- Ensure content visibility is governed by subscription and moderation rules rather than deleting seller data.
+- ship a focused MVP for Sana'a only
+- support dynamic wedding categories and future subcategories
+- maintain public page visibility and SEO where appropriate
+- respect subscription and moderation rules without deleting seller data
 
 ---
 
 ## 6. Non-Goals
 
-The following are explicitly out of scope for the Day 1 PRD and the MVP phase:
+The following remain outside scope for this phase:
 
-- Building a mobile application.
-- Supporting markets outside Sana'a in the initial launch.
-- Launching a full payment integration with Jaib.
-- Implementing a real-time marketplace with complex bidding or auction flows.
-- Full customer social graph, community features, or chat functionality beyond contact tracking and storefront contact channels.
-- Hardcoded category assumptions; categories must remain dynamic.
-- Full enterprise-grade analytics beyond basic product, store, and subscription tracking.
-- Any authentication system implementation details beyond high-level requirements.
-- Any admin pre-approval workflow for new stores, products, or services.
+- building a mobile app
+- expanding beyond Sana'a in the initial launch
+- implementing a real payment integration
+- building live chat as a platform-native communication layer
+- hardcoded category lists that require code changes for each new category
+- full enterprise analytics beyond core business reporting
+- real payment provider integration before the final payment phase
 
 ---
 
@@ -96,14 +109,15 @@ The following are explicitly out of scope for the Day 1 PRD and the MVP phase:
 
 ### Primary Market
 
-- Customers in Sana'a seeking local products and services.
-- Small and medium-sized sellers operating locally in Sana'a.
-- Service providers who currently rely on social media or messaging channels.
+- customers planning weddings in Sana'a
+- local wedding vendors and service providers in Sana'a
+- businesses that already rely on social media and messaging channels
 
 ### Secondary Market
 
-- Sellers outside the initial city who may expand into the platform later.
-- Admins and moderators whose job is to maintain quality and policy compliance.
+- future expansion beyond Sana'a
+- admin and moderation users
+- local business owners who need structured storefront visibility
 
 ---
 
@@ -111,414 +125,256 @@ The following are explicitly out of scope for the Day 1 PRD and the MVP phase:
 
 ### 8.1 Customer Persona
 
-A customer is a person in Sana'a who wants to discover local stores, products, or services quickly and contact sellers directly. The customer may or may not create an account depending on the feature set. Customers want convenience, trust, and speed in finding relevant local offerings.
+A customer is a person in Sana'a looking for a wedding vendor, product, or service. They may browse without an account and may create one when they need identity-linked actions such as favorites, reports, or reviews.
 
 Needs:
 
-- Discover stores and listings without login.
-- Search by category, store, name, or keyword.
-- Compare product or service offers.
-- View store reputation indicators, reviews, and contact channels.
-- Save favorite stores or items if logged in.
-- Submit reports or leave reviews if eligible and authenticated.
+- discover wedding businesses without login
+- search by category, vendor name, keyword, or service type
+- compare offers and contact methods
+- review store details, social handles, and service offerings
+- contact sellers through their preferred channels
 
 ### 8.2 Seller Persona
 
-A seller is a business or independent service provider operating in Sana'a. They may already sell through social media or messaging apps and want a better organized online storefront. Sellers need to manage inventory, services, store profiles, and contact information.
+A seller is a wedding business or service provider operating in Sana'a. They need a clean storefront to present products and services to customers and manage their public profile.
 
 Needs:
 
-- Create and manage a store profile.
-- Add and update products and services.
-- Manage contact channels and store information.
-- View subscription and trial status.
-- Receive notifications and admin notes.
-- Maintain visibility in public discovery where allowed by plan or policy.
+- create and manage a store profile
+- add products and services
+- manage contact channels and business details
+- track trial or subscription status
+- receive admin notes and operational updates
 
 ### 8.3 Admin Persona
 
-An administrator monitors platform quality, content moderation, categories, subscriptions, notifications, user activity, and operational health. They must be able to intervene when stores, products, services, reports, or reviews require action.
+An administrator monitors listing quality, category structure, subscriptions, moderation, and operational issues across the platform.
 
 Needs:
 
-- Manage users, sellers, stores, products, and services.
-- Moderate categories, reports, and reviews.
-- Review subscription and payment records.
-- Send notes to sellers.
-- Suspend, close, reactivate, or remove listings as needed.
-- Maintain audit logs and administrative visibility.
+- manage users, stores, categories, and reports
+- review reviews and moderation outcomes
+- monitor subscription and visibility rules
+- send notes or take action on seller content
 
 ---
 
-## 9. Customer Persona
+## 9. User Journeys
 
-See Section 8.1. The customer is the primary discovery user. They are not required to log in for public browsing, but may authenticate for identity-linked features such as favorites, reviews, reports, personal notifications, and account management.
+### 9.1 Customer Journey
 
----
+1. Customer opens the homepage.
+2. Customer browses wedding categories, featured vendors, or popular services.
+3. Customer searches for a type of vendor or service.
+4. Customer opens a store or service listing.
+5. Customer reviews details, pricing, contact channels, and availability.
+6. Customer contacts the seller directly using WhatsApp, Instagram, Facebook, Telegram, phone, or website.
+7. If logged in, the customer can save favorites, report inappropriate content, or leave a review if eligible.
 
-## 10. Seller Persona
+### 9.2 Seller Journey
 
-See Section 8.2. Seller accounts are required for business operations. Sellers can create stores, list products and services, manage contact information, and track their subscription and trial status.
+1. Seller creates an account.
+2. Seller creates a storefront.
+3. The store becomes active immediately and becomes visible according to visibility rules.
+4. Seller adds products or services.
+5. Seller manages category placement, store details, and contact channels.
+6. Seller tracks trial or subscription status.
+7. Seller receives clarifying notes or moderation action if needed.
 
----
+### 9.3 Admin Journey
 
-## 11. Admin Persona
-
-See Section 8.3. The admin persona oversees platform quality, compliance, and business operations. Admins focus on monitoring and moderating platform content and operational records.
-
----
-
-## 12. User Journeys
-
-### 12.1 Customer Journey
-
-1. Customer opens public marketplace homepage.
-2. Customer browses categories, offers, nearby stores, popular products, or services.
-3. Customer searches by keyword, category, or store name.
-4. Customer opens a store or listing page.
-5. Customer views store details, contact channels, pricing, reviews, and service information.
-6. Customer contacts the seller through the listed external contact channels.
-7. If logged in, customer may save favorites, report concerns, or leave a review if eligible.
-
-### 12.2 Seller Journey
-
-1. Seller creates account and signs in.
-2. Seller creates a store profile.
-3. Store becomes active immediately and is visible in the public marketplace, subject to subscription/trial rules and later moderation.
-4. Seller adds products and/or services.
-5. Seller manages contact channels and store details.
-6. Seller monitors trial or subscription status.
-7. Seller receives notifications and any admin notes.
-8. Seller updates inventory or store details as needed.
-
-### 12.3 Admin Journey
-
-1. Admin logs in to admin dashboard.
-2. Admin reviews new store creation notifications.
-3. Admin reviews and manages users, stores, products, services, reports, reviews, subscriptions, and categories.
-4. Admin sends notes, suspends, reactivates, closes, or removes listings where required.
-5. Admin reviews audit logs and moderation actions.
-6. Admin monitors subscription status and content visibility changes.
+1. Admin logs in to the admin dashboard.
+2. Admin reviews new store or seller activity.
+3. Admin manages categories, reports, reviews, and subscriptions.
+4. Admin sends notes or changes content visibility when required.
+5. Admin monitors subscription expiration and public visibility rules.
 
 ---
 
-## 13. Customer Journey
-
-Detailed customer experience is the same as the public marketplace flow described above: discover → search → evaluate → contact → follow-up. The customer experience is intentionally lightweight and does not require an account for typical discovery activity.
-
----
-
-## 14. Seller Journey
-
-Detailed seller journey: account creation → store creation → product/service listing → contact channel setup → visibility management → subscription monitoring → content updates → moderation support.
-
----
-
-## 15. Admin Journey
-
-Detailed admin journey: operational review → moderation decisions → communication with sellers → policy enforcement → subscription oversight → system governance.
-
----
-
-## 16. Functional Requirements
+## 10. Functional Requirements
 
 ### Authentication
 
-- Public marketplace browsing must not require an account.
-- Authentication is required for account-bound features such as favorites, reviews, reports, personal notifications, and seller/admin access.
-- The product requires separate user roles for customer, seller, and admin.
-- The product must support secure session management and role-based access controls.
+- public discovery must not require an account
+- authentication is required for identity-linked actions
+- separate roles are required for customer, seller, and admin
+- backend enforcement remains the source of truth for permissions
 
 ### Customer Accounts
 
-- Customers may browse without an account.
-- Customers may create an account for personalized behavior.
-- Customers must be able to manage favorites, profile settings, and account-linked actions.
+- visitors may browse without creating an account
+- customers may create an account for favorites, reviews, reports, and personal settings
+- customer accounts do not replace public marketplace browsing
 
 ### Seller Accounts
 
-- Sellers require an account to create and manage stores, products, and services.
-- Sellers can manage store profile details, contact channels, products, services, and subscription information.
-- Sellers receive notifications and admin notes.
+- sellers require an account to create and manage stores, products, and services
+- sellers can manage their store profile, contact channels, and business details
+- sellers receive relevant notifications and admin notes
 
 ### Admin Accounts
 
-- Admins require an account and elevated permissions.
-- Admins manage users, sellers, stores, products, services, categories, locations, reports, reviews, notifications, subscriptions, payment records, moderation, and audit information.
+- admins manage categories, stores, products, services, subscriptions, reports, reviews, and audit logs
+- admin role must be separate from seller and customer access
 
 ### Stores
 
-- Sellers can create one or more stores according to business rules.
-- Store status becomes ACTIVE immediately when created.
-- No admin pre-approval workflow is required.
-- Admin receives a notification when a store is created.
-- Admin can view, send notes, suspend, close, or reactivate stores.
-- Store content can become hidden when subscription expires.
+- sellers can create one or more stores according to business rules
+- new stores become ACTIVE immediately
+- no admin pre-approval workflow is required
+- admin is notified when a store is created
+- admins can suspend, close, or reactivate stores after publication
 
-### Products
+### Products and Services
 
-- Sellers can create product listings.
-- Product becomes ACTIVE immediately when created.
-- No admin pre-approval workflow is required.
-- Admin receives a notification when a product is created.
-- Admin can view, send notes, suspend, remove, or reactivate products.
-- Product visibility must be consistent with the supporting store’s subscription status and moderation state.
+- sellers add wedding-related products and services under their store
+- listings become ACTIVE immediately when created
+- no admin pre-approval is required
+- admin can moderate, suspend, remove, or reactivate listings when necessary
+- visibility follows moderation and subscription rules
 
-### Services
+### Dynamic Categories
 
-- Sellers can create service listings.
-- Service becomes ACTIVE immediately when created.
-- No admin pre-approval workflow is required.
-- Admins can later moderate, suspend, remove, or reactivate services as required.
+- categories are managed from the database and admin tools, not hardcoded in the application
+- a category may be active or inactive, ordered, renamed, or nested under a parent category
+- categories are suitable for future wedding niches and new wedding-related verticals
+- category-specific metadata and custom fields should be configurable as a later design need, not hardcoded per screen
+- adding a new category must not require app redeployment or code changes
 
-### Categories
+### Search and Discovery
 
-- Categories are dynamic and managed by admins.
-- Categories must not be assumed to be hardcoded.
-- Listings should be categorized dynamically according to admin-managed taxonomy.
+- customers can search by keyword, category, store name, product name, or service type
+- discovery surfaces should support wedding-focused browsing such as products, services, stores, offers, new arrivals, and popular local businesses
+- ranking should remain relevant and local, without automatically favoring paid listings
 
-### Locations
+### Offers and Promotions
 
-- The initial MVP targets Sana'a only.
-- The architecture must allow future expansion beyond Sana'a.
-- Location data must support local-only product discovery in the MVP.
-
-### Search
-
-- Public users and authenticated users must be able to search by product, service, store, keyword, category, and offer.
-- Search results should support relevant ordering and ranking without automatically privileging paid subscription listings.
-
-### Discover
-
-- Discover experiences should support categories such as All, Products, Services, Stores, Offers, New, Popular, and Nearby.
-- Ranking must not automatically favor paid subscriptions.
-- Discovery is part of the public marketplace experience.
-
-### Offers
-
-- Sellers may publish promotional offers relevant to products or services.
-- Offers should be discoverable through public marketplace surfaces.
-- Offer visibility must reflect moderation and subscription rules.
-
-### Favorites
-
-- Logged-in customers can save favorites for products, services, or stores.
-- Favorites are account-bound and require user identity.
+- sellers may publish offers for products or services
+- offer visibility must reflect moderation and subscription status
+- public discovery remains available without login
 
 ### Reviews
 
-- Reviews are based on a Contact Event, not Verified Purchase.
-- Review eligibility is determined by future business rules tied to customer contact with the seller.
-- The review system supports customer feedback and moderation guidance.
+- reviews are based on a Contact Event, not Verified Purchase
+- review eligibility rules remain a business rule handled by backend services
+- reviews support trust and moderation workflows
 
 ### Reports
 
-- Customers and admins may be able to submit reports related to suspicious, inaccurate, or inappropriate content.
-- Report workflows must support review and moderation actions.
+- users may report problematic stores, products, services, or reviews
+- admin reviews reports and resolves them by policy
 
 ### Notifications
 
-- Users receive relevant notifications when applicable.
-- Sellers receive store creation and subscription-trial notifications.
-- Admins receive alerts for created stores and products.
-- Notifications should support account-related operational updates.
+- sellers and admins receive relevant notifications
+- notifications are role-aware and should remain aligned with future email or in-app notification strategies
 
 ### Contact Tracking
 
-- The platform must support tracking of customer contact events with sellers.
-- Contact tracking is a key input for future review eligibility.
-- Seller contact channels are managed independently and used for customer contact outside the platform.
+- the platform records customer contact events with sellers for trust and future review logic
+- direct communication remains external to the platform
 
-### Subscription
+### Subscription and Trial
 
-- Subscription plans, subscription records, and payment records should be supported in database design from early stages.
-- Subscription values are not hardcoded in business logic and must eventually come from the database.
-- Current plan pricing is 2500 YER monthly.
-- Current product limit is 250 products.
-- Subscription expiration must hide public listing visibility rather than delete seller data.
+- current monthly subscription price is 2500 YER
+- current product limit is 250 items per seller store or business account
+- sellers receive a 60-day free trial from the store activation date
+- subscription expiry hides public content without deleting seller data
 
-### Trial
+### SEO and Performance
 
-- Sellers receive a 60-day free trial.
-- Trial begins when the store becomes active.
-- Trial details must be configurable in the database and not hardcoded into business logic.
-- If trial expires, store visibility is removed from public marketplace and related products/services become hidden where required.
-- Seller data must remain intact.
+- public store and category pages should be SEO-friendly when appropriate
+- the marketplace must support pagination, response time awareness, and efficient database access
 
-### Payment Records
+### Moderation and Audit
 
-- The database must support subscription plans, subscriptions, and payment records from early stages.
-- Jaib is the intended payment provider, but Jaib API integration is postponed to the final payment integration phase.
-- No Jaib endpoints, authentication flows, webhooks, or API behavior are to be implemented or specified in this PRD.
-
-### Analytics
-
-- The platform should capture basic analytics on marketplace usage, store views, product views, category performance, and subscription status.
-- Analytics should support future business optimization and reporting.
-
-### SEO
-
-- Public marketplace pages must be SEO-friendly.
-- Public pages should support indexing where appropriate.
-- Store, product, and category pages should be structured to support discoverability in search engines.
-
-### Moderation
-
-- Moderation is necessarily post-publication for stores, products, and services.
-- Admins must be able to review and intervene after content goes live.
-- Content may be suspended, removed, hidden, or reactivated based on policy and operational action.
-
-### Audit Logging
-
-- System actions must be auditable for moderation, user actions, subscription changes, and administrative changes.
-- Audit information is part of admin responsibilities.
+- moderation is post-publication rather than pre-approval
+- admin actions must be auditable and visible to the seller when relevant
 
 ---
 
-## 17. Store Requirements
+## 11. Product Scope and MVP
 
-- Sellers can create a store profile.
-- Store status becomes ACTIVE immediately upon creation.
-- No admin approval is required before store activation.
-- Admin is notified when store is created.
-- Store must support store information, contact channels, images, location, and category metadata.
-- Admin may view, send notes, suspend, close, or reactivate stores.
-- A store can be hidden from public access when subscription or trial expires.
-- Seller data is retained even if the store is hidden or closed.
+### MVP Scope
 
----
+The initial MVP includes:
 
-## 18. Product Requirements
+- public marketplace browsing without login
+- seller storefront creation
+- store activation without admin pre-approval
+- product and service management
+- dynamic category support in principle, managed via admin configuration and data sources
+- standard review, report, and notification concepts
+- search, discovery, and public listing visibility
+- subscription and trial lifecycle management
+- admin moderation and visibility controls
 
-- A seller can create products in the seller dashboard.
-- Product becomes ACTIVE immediately.
-- No admin pre-approval workflow is required.
-- Admin receives notification on product creation.
-- Product listing includes title, description, price, category, images, quantity or status metadata where appropriate, and store association.
-- Admin can view, send note, suspend, remove, or reactivate product listings.
-- Product visibility is hidden when required by store subscription status or moderation action.
+### In-Scope Business Rules
 
----
+- Sana'a is the initial market
+- the platform remains web-based only
+- public discovery is available without account creation
+- seller and admin roles remain separate
+- dynamic categories do not require code changes to add a new type
+- subscription expiry hides content, but does not delete data
+- direct payment integration remains deferred to the final payment phase
 
-## 19. Service Requirements
+### Out-of-Scope for This Phase
 
-- Sellers can create services using a similar workflow to products.
-- Services become ACTIVE immediately.
-- No admin approval is required before publication.
-- Admin can moderate services after publication.
-- Services include service details, pricing or duration model, location applicability, and seller/store association.
-- Service visibility must reflect moderation and subscription status.
-
----
-
-## 20. Search Requirements
-
-- Users can search products, services, stores, offers, and categories.
-- Search must support keyword and category-driven discovery.
-- Search results should prioritize relevance and local context.
-- Paid subscription should not automatically guarantee top ranking.
-- Search experiences should support future refinement such as filters by location, category, or store attributes.
+- real payment provider integration
+- full booking engine or complex event scheduling
+- full native mobile application
+- final category attribute system implementation beyond design-level readiness
 
 ---
 
-## 21. Discover Requirements
+## 12. Acceptance Criteria
 
-- The public marketplace should offer a discovery experience that includes concepts such as All, Products, Services, Stores, Offers, New, Popular, and Nearby.
-- Discovery surfaces must remain accessible to unregistered users.
-- Ranking must not be artificially biased toward paying sellers.
-- The discovery experience should support future personalization and localized placement.
+### Customer Discovery
 
----
+- a visitor can browse the public marketplace without login
+- a customer can search for wedding-related stores or services
+- a customer can open a store page and contact the seller using the listed communication channel
 
-## 22. Favorites Requirements
+### Seller Management
 
-- Favorites are an account-based feature.
-- A logged-in customer can save products, services, or stores.
-- Customers can manage favorites in their profile.
-- Favorites are not required for general browsing.
+- a seller can create a store and activate it immediately
+- a seller can add products and services under the store
+- a seller can see the subscription or trial state
 
----
+### Admin Management
 
-## 23. Reviews Requirements
+- an admin can review and moderate stores, products, services, reports, and reviews
+- an admin can manage categories and activation state for categories
+- an admin can review a seller’s status and visibility settings
 
-- Customers may leave reviews when they are eligible according to future contact-event business rules.
-- Review eligibility is not based on Verified Purchase.
-- Review functionality must support moderation and reporting workflows.
-- Reviews should be visible on store and/or listing surfaces when appropriate.
+### Subscription and Visibility
 
----
+- expired trial or subscription hides public-facing content without deleting data
+- reactivation restores visibility when the subscription is valid again
 
-## 24. Reports Requirements
+### Dynamic Categories
 
-- Users must be able to report problematic listings or store behavior.
-- Reports should capture reason, detail, and relevant item reference.
-- Admins can review and resolve reports.
-- Reporting should support content moderation and trust-building without needing a full social platform feature set.
+- a category can be created, edited, ordered, enabled or disabled, and optionally nested
+- a new category does not require a code change to appear in the public marketplace
 
 ---
 
-## 25. Notification Requirements
+## 13. Constraints and Requirements
 
-- Notification functionality is required for user, seller, and admin communication.
-- Sellers receive notifications about trial status, subscription status, store creation, and admin notes.
-- Admins receive store and product creation notifications.
-- Notifications must be role-aware and support future push or email integration as applicable.
-
----
-
-## 26. Subscription Requirements
-
-- Subscription management is required for seller visibility and platform access.
-- Current subscription plan price: 2500 YER per month.
-- Billing model: monthly.
-- Current product limit: 250 products.
-- Subscription values must eventually be stored in the database and not hardcoded in application logic.
-- Expired subscriptions must hide content from public access without deleting seller data.
-- Reactivation of the subscription should restore public visibility according to business rules.
+- do not hardcode wedding categories in code
+- keep business values such as pricing and product limits configurable in the data layer whenever possible
+- do not start the payment phase in this stage
+- do not claim the platform supports a real payment integration before it is actually implemented
+- keep all authorization and visibility checks enforced in the backend
+- use pagination and efficient queries for public and admin lists
 
 ---
 
-## 27. Trial Rules
+## 14. Summary
 
-- Sellers receive a 60-day free trial.
-- Trial begins when the store becomes active.
-- The trial is a temporary promotion and not a permanent business rule.
-- Trial status and expiry must be managed in a configurable way.
-- After trial expiry, public visibility may be hidden until subscription is active again.
-- Seller data remains stored regardless of trial or subscription expiration.
-
----
-
-## 28. Payment Domain Requirements
-
-- The platform must support payment-related domain models from early stages, including subscription plans, subscription records, and payment records.
-- Jaib is the intended provider for future payment processing.
-- Jaib integration is intentionally deferred until the final payment integration phase.
-- This PRD does not define Jaib endpoints, credentials, API contracts, webhooks, or authentication behavior.
-- Payment domain requirements are limited to data architecture preparation and business clarity for future integration.
-
----
-
-## 29. Moderation Rules
-
-- Store, product, and service content can be published immediately and is not subject to admin pre-approval.
-- Admin can later intervene when necessary.
-- Moderation actions may include sending notes, suspending, removing, closing, or reactivating content.
-- Moderation decisions must be logged for audit purposes.
-- Administrative notes to sellers must be visible and actionable in the seller dashboard.
-
----
-
-## 30. Contact Tracking Requirements
-
-- The marketplace must account for customer contact events with sellers.
-- Contact tracking is required for future review eligibility logic.
-- Contact channels are managed by sellers and used externally to the platform.
-- Contact events are business records that support trust and review eligibility rules.
-
----
-
-## 31. Category Requirements
+This PRD reframes the existing marketplace concept into a wedding-specialized platform for Sana'a while preserving the proven base rules of the project: public discovery, separate seller and admin roles, subscription-aware visibility, moderation, and a dynamic category model. The implementation remains intentionally scoped to the current development day and does not jump ahead to future database or payment work.
 
 - Categories are dynamic and managed by admin.
 - The taxonomy must be configurable and not hardcoded into the application.
