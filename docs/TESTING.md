@@ -75,10 +75,11 @@ E2E tests should cover critical customer, seller, and admin journeys.
 #### Seller flow
 
 1. create account
-2. create store
-3. add products and services
-4. review subscription or trial state
-5. receive moderation or operational notes
+2. create store and complete storefront details
+3. store enters `PENDING_ACTIVATION` and remains hidden from public discovery until admin approval
+4. add products and services only according to the active seller workflow
+5. review subscription or trial state
+6. receive moderation or operational notes
 
 #### Admin flow
 
@@ -126,7 +127,7 @@ Manual testing remains necessary when:
 Regression testing should verify:
 
 - public browsing remains available without login
-- immediate activation remains the default for stores and listings
+- pending activation remains the default for newly created stores until a server-authorized admin approves them
 - no hardcoded category assumptions are introduced
 - trial and subscription expirations preserve seller data
 - contact-event review model remains intact

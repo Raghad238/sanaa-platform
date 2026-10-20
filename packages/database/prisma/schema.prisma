@@ -8,6 +8,7 @@ datasource db {
 }
 
 enum StoreStatus {
+  PENDING_ACTIVATION
   ACTIVE
   SUSPENDED
   CLOSED
@@ -85,7 +86,9 @@ model Store {
   description     String?          @db.Text
   logoUrl         String?          @map("logo_url") @db.VarChar(2048)
   coverImageUrl   String?          @map("cover_image_url") @db.VarChar(2048)
-  status          StoreStatus      @default(ACTIVE)
+  status          StoreStatus      @default(PENDING_ACTIVATION)
+  activatedAt     DateTime?        @map("activated_at") @db.DateTime(3)
+  trialEndsAt     DateTime?        @map("trial_ends_at") @db.DateTime(3)
   createdAt       DateTime         @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt       DateTime         @updatedAt @map("updated_at") @db.DateTime(3)
   seller          Seller           @relation(fields: [sellerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
@@ -97,6 +100,8 @@ model Store {
   favorites       FavoriteStore[]
 
   @@index([status])
+  @@index([activatedAt])
+  @@index([trialEndsAt])
   @@map("stores")
 }
 

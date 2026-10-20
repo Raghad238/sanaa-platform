@@ -175,11 +175,11 @@ Needs:
 ### 9.2 Seller Journey
 
 1. Seller creates an account.
-2. Seller creates a storefront.
-3. The store becomes active immediately and becomes visible according to visibility rules.
-4. Seller adds products or services.
+2. Seller creates a storefront and completes the required business details.
+3. The store enters `PENDING_ACTIVATION` and remains hidden from public search until admin approval.
+4. Seller adds products or services only after the store is approved or according to the current seller workflow.
 5. Seller manages category placement, store details, and contact channels.
-6. Seller tracks trial or subscription status.
+6. Seller tracks the store activation status, trial period, and subscription state.
 7. Seller receives clarifying notes or moderation action if needed.
 
 ### 9.3 Admin Journey
@@ -220,11 +220,12 @@ Needs:
 
 ### Stores
 
-- sellers can create one or more stores according to business rules
-- new stores become ACTIVE immediately
-- no admin pre-approval workflow is required
-- admin is notified when a store is created
-- admins can suspend, close, or reactivate stores after publication
+- sellers can create one or more stores and complete their storefront details normally
+- newly created stores enter `PENDING_ACTIVATION` and remain hidden from public search and store listings until an admin activates them
+- stores awaiting activation appear in the admin dashboard for action
+- admin activation is a server-authorized action that records `activatedAt` and sets `trialEndsAt` to 60 days after activation
+- repeated activation attempts are idempotent and do not reset or extend the trial period
+- admins can suspend, close, or reactivate stores independently from subscription and trial status
 
 ### Products and Services
 

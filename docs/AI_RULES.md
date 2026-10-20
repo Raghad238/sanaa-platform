@@ -20,7 +20,7 @@ This document defines mandatory rules for any AI coding agent working on the San
 ## 3. Business Rule Protection
 
 10. Never change business rules silently.
-11. Never create approval workflows for Store, Product, or Service publication.
+11. Store publication remains a server-authorized admin activation flow: new stores may start in `PENDING_ACTIVATION` and must not be visible publicly before activation.
 12. Never hardcode subscription limits or pricing values.
 13. Never hardcode wedding categories or vendor lists.
 14. Never hardcode business configuration that belongs in the database.

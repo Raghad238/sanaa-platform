@@ -111,20 +111,24 @@ This document defines the authoritative business rules for the Sana'a Wedding Ma
 - Store creation is allowed without admin approval in the initial model.
 - Store creation triggers admin notification.
 
-### 4.2 Immediate activation
+### 4.2 Pending activation
 
-- Newly created stores become ACTIVE immediately.
-- Immediate activation is a core product rule and must not be changed silently.
+- Newly created stores enter `PENDING_ACTIVATION` after creation.
+- Pending stores are not publicly visible in search or storefront discovery results.
+- Pending stores appear in the admin dashboard for review and activation.
 
-### 4.3 No pre-approval workflow
+### 4.3 Admin activation workflow
 
-- There is no admin pre-approval workflow for store creation.
-- Admin intervention happens after publication.
+- A store is activated only by a server-authorized admin action.
+- Seller-initiated requests cannot activate a store directly.
+- Successful activation records `activatedAt` and sets `trialEndsAt` to 60 days after activation.
+- Repeated activation requests are idempotent and do not reset or extend the trial period.
 
 ### 4.4 Store status values
 
 The following status values are conceptually relevant:
 
+- PENDING_ACTIVATION
 - ACTIVE
 - SUSPENDED
 - CLOSED
@@ -204,8 +208,9 @@ The following status values are conceptually relevant:
 
 ### 6.2 Trial lifecycle
 
-- Sellers receive a 60-day free trial when the store becomes active.
-- Trial duration must be tracked and visible to the seller and admin.
+- Sellers receive a 60-day free trial when the admin activates the store.
+- Trial duration starts from `activatedAt` and ends at `trialEndsAt`.
+- Trial expiry must be tracked and visible to the seller and admin.
 - Expired trial may require hiding public content until a subscription becomes active again.
 
 ### 6.3 Expiration

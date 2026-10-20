@@ -116,6 +116,7 @@ Protected endpoints must enforce authorization in the backend. Frontend role sta
 - POST /api/v1/stores
 - PATCH /api/v1/stores/:id
 - DELETE /api/v1/stores/:id
+- PATCH /api/v1/admin/stores/:storeId/activate
 
 ### Categories
 
