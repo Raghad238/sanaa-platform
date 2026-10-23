@@ -16,13 +16,13 @@ The database supports:
 
 - Customers discovering products and services.
 - Customers discovering online sellers and stores.
-- Sellers managing one store each.
+- Sellers managing one or more stores.
 - Products and services listed by sellers.
-- Product and service categories.
+- Dynamic, hierarchical product and service categories.
 - Store locations.
 - External seller contact channels.
 - Favorites.
-- Reviews after a contact event.
+- Reviews linked to a platform-recorded contact event (not a verified purchase).
 - Offers and discounted products.
 - Reports and admin notes.
 - Subscriptions and payments.
@@ -31,9 +31,9 @@ The database supports:
 - Roles and permissions.
 - Audit logs.
 
-This document is the source of truth for the database design during development.
+This document defines the target database design for the MVP. It is a design document, not a claim that every listed relationship is already implemented in Prisma.
 
-Any database implementation must follow this document unless this document is intentionally updated through a documented project decision.
+The current Prisma schema is partial relative to this target: it enforces one store per seller, has no `UserRole` or `ContactEvent` models, does not link reviews to contact events, has no category ordering field, and associates subscriptions with sellers while storing trial end on stores. The Day 8 scope documents the target only; schema and migration changes belong to the later database implementation day.
 
 ---
 
@@ -131,7 +131,7 @@ JSON must not be used as a replacement for normal relational tables when the dat
 
 # 4. Core Entities
 
-The MVP database contains the following 27 core tables:
+The MVP database contains the following 29 core tables:
 
 1. `users`
 2. `sellers`
@@ -160,6 +160,8 @@ The MVP database contains the following 27 core tables:
 25. `permissions`
 26. `role_permissions`
 27. `audit_logs`
+28. `user_roles`
+29. `contact_events`
 
 ---
 
@@ -169,7 +171,7 @@ The MVP database contains the following 27 core tables:
 
 Represents all platform users.
 
-Users may be customers, sellers, or administrators depending on their assigned role(s).
+Users may be customers, sellers, or administrators depending on their assigned role(s). Role assignments are stored separately so a user can have the authorized combination of roles without adding role-specific columns to `users`.
 
 ### Main fields
 
@@ -181,6 +183,7 @@ Users may be customers, sellers, or administrators depending on their assigned r
 - `status`
 - `created_at`
 - `updated_at`
+- role assignments through `user_roles`
 
 ### Rules
 
@@ -188,7 +191,7 @@ Users may be customers, sellers, or administrators depending on their assigned r
 - Passwords must never be stored in plaintext.
 - Only password hashes are stored.
 - A user may become a seller through the `sellers` table.
-- Administrative authorization is handled through roles and permissions.
+- User-to-role assignments are stored in `user_roles`; role capabilities are defined through `role_permissions`.
 
 ---
 
@@ -206,12 +209,12 @@ Represents seller-specific information.
 ### Relationships
 
 - One `user` can have zero or one `seller` profile.
-- One `seller` owns exactly one store in the MVP.
+- One `seller` may own one or more stores.
 
 ### Rules
 
 - `user_id` must be unique.
-- A seller cannot own multiple stores in the MVP.
+- A seller profile may own multiple stores; each store has an independent activation and subscription lifecycle.
 
 ---
 
@@ -229,12 +232,13 @@ Represents a seller's public store.
 - `logo_url`
 - `cover_image_url`
 - `status`
+- `activated_at`
 - `created_at`
 - `updated_at`
 
 ### Relationships
 
-- One seller → one store.
+- One seller → many stores.
 - One store → many products.
 - One store → many services.
 - One store → many contact channels.
@@ -244,12 +248,15 @@ Represents a seller's public store.
 
 ### Rules
 
-- `seller_id` must be unique.
+- `seller_id` is indexed and references the owning seller.
 - `slug` must be unique.
-- Store activation is immediate after creation.
-- Store creation does not require administrator approval.
-- Admin may later suspend, close, remove, or reactivate a store according to moderation rules.
-- If the seller's subscription expires, the public store is hidden but its data is preserved.
+- A newly created store has status `PENDING_ACTIVATION` and is visible to administrators, not public visitors.
+- Only an authorized administrator can activate a pending store.
+- The first successful activation records `activated_at` and starts the store's 60-day trial. Repeated activation must not reset or extend the trial.
+- Trial timestamps are stored on the store's subscription record.
+- Store status and subscription/trial status are separate: a valid subscription does not override a suspended or closed store.
+- A store is publicly visible only after activation and while its trial or subscription is valid.
+- Expiration hides the store from public discovery but preserves its data.
 
 ---
 
@@ -264,6 +271,7 @@ Represents product and service categories.
 - `slug`
 - `description`
 - `parent_id`
+- `sort_order`
 - `status`
 - `created_at`
 - `updated_at`
@@ -283,9 +291,10 @@ Category
 - A category may have a parent category.
 - A category may have many child categories.
 - Categories can be used by both products and services.
-- Category management is dynamic.
+- Categories are database-managed: administrators can create, rename, reorder, activate/deactivate, and nest them without an application redeployment.
 - Sellers may select available categories when creating products or services.
-- New or problematic categories may be reviewed/moderated by administrators.
+- A category's slug is unique. Inactive categories remain stored and are unavailable for new public listings.
+- Category-specific custom-field definitions are a later design concern and are not introduced by this MVP model.
 
 ---
 
@@ -517,9 +526,9 @@ Represents customer reviews of stores.
 - `id`
 - `user_id`
 - `store_id`
+- `contact_event_id`
 - `rating`
 - `comment`
-- `contact_verified`
 - `status`
 - `created_at`
 - `updated_at`
@@ -533,7 +542,7 @@ Represents customer reviews of stores.
 
 - Reviews are allowed only after a contact event with the seller.
 - A contact event does not mean a verified purchase.
-- The platform verifies that a contact interaction occurred through platform tracking.
+- The review references a `contact_events` record for the same customer and store. This verifies only a platform-side contact action, not a conversation or purchase.
 - One customer may submit at most one review per store.
 - Database uniqueness should enforce:
 
@@ -542,7 +551,7 @@ UNIQUE(user_id, store_id)
 ```
 
 - Review content may be moderated by administrators.
-- `contact_verified` represents the platform's contact-event verification, not purchase verification.
+- The backend must verify that the referenced contact event belongs to the same user and store. Do not treat this relationship as verified purchase.
 
 ---
 
@@ -728,16 +737,16 @@ Additional plan features may be stored in a JSON field when appropriate.
 
 # 5.20 subscriptions
 
-Represents a seller's subscription to a subscription plan.
+Represents a store's subscription to a subscription plan.
 
 ### Main fields
 
 - `id`
-- `seller_id`
+- `store_id`
 - `plan_id`
 - `status`
-- `trial_start_at`
-- `trial_end_at`
+- `trial_started_at`
+- `trial_ends_at`
 - `current_period_start`
 - `current_period_end`
 - `cancelled_at`
@@ -746,12 +755,12 @@ Represents a seller's subscription to a subscription plan.
 
 ### Relationships
 
-- One seller → many subscriptions over time.
+- One store → many subscriptions over time.
 - One subscription plan → many subscriptions.
 
 ### Rules
 
-The seller's subscription status determines whether the seller's store and public content should be visible.
+The store's subscription status determines whether that store and its public content should be visible. A store's initial trial is created only when an administrator first activates it. Each store has an independent trial and subscription lifecycle.
 
 When a subscription expires:
 
@@ -1016,33 +1025,61 @@ Audit logs should be append-oriented and should not be casually modified or dele
 
 ---
 
+## 5.28 user_roles
+
+Junction table assigning roles to users.
+
+### Main fields
+
+- `user_id`
+- `role_id`
+- `created_at`
+
+### Relationships and constraints
+
+- One user may have multiple roles, and one role may be assigned to multiple users.
+- Primary key: `(user_id, role_id)`.
+- Role assignment does not replace server-side authorization checks.
+
+---
+
+## 5.29 contact_events
+
+Records a customer's platform-side action to open or initiate contact with a store through one of its external contact channels.
+
+### Main fields
+
+- `id`
+- `user_id` (nullable for anonymous platform-side contact clicks)
+- `store_id`
+- `contact_channel_id`
+- `created_at`
+
+### Relationships and rules
+
+- A contact event belongs to one store; it may be associated with an authenticated user. The channel reference identifies the channel selected at the time.
+- A store and an authenticated user may each have many contact events.
+- A contact event may support at most one review.
+- Only a contact event associated with the same authenticated user as the review can satisfy review eligibility; anonymous events cannot qualify a review.
+- The event proves only that the customer initiated a contact action on the platform. It does not prove a completed conversation or purchase.
+- The platform must not collect or inspect messages on external services.
+
+---
+
 # 6. Entity Relationships
 
 The core relationships are:
 
 ```text
-users
-  │
-  └── 1 : 0..1 ── sellers
-                       │
-                       └── 1 : 1 ── stores
-                                      │
-                                      ├── 1 : N ── products
-                                      │              │
-                                      │              ├── 1 : N ── product_images
-                                      │              └── 1 : N ── offers
-                                      │
-                                      ├── 1 : N ── services
-                                      │              │
-                                      │              └── 1 : N ── service_images
-                                      │
-                                      ├── 1 : N ── contact_channels
-                                      │
-                                      ├── 1 : N ── reviews
-                                      │
-                                      └── N : M ── locations
-                                                    │
-                                             store_locations
+USERS 1 ── 0..1 SELLERS
+SELLERS 1 ── N STORES
+STORES 1 ── N PRODUCTS ── N IMAGES
+PRODUCTS 1 ── N OFFERS
+STORES 1 ── N SERVICES ── N IMAGES
+STORES 1 ── N CONTACT_CHANNELS
+STORES 1 ── N REVIEWS
+STORES 1 ── N CONTACT_EVENTS
+STORES N ── M LOCATIONS (through STORE_LOCATIONS)
 ```
 
 Users interact with products, stores, and services through favorites:
@@ -1057,11 +1094,8 @@ users
 Subscriptions:
 
 ```text
-sellers
-   │
-   └── 1 : N ── subscriptions ── N : 1 ── subscription_plans
-                         │
-                         └── 1 : N ── payments
+SELLERS 1 ── N STORES 1 ── N SUBSCRIPTIONS N ── 1 SUBSCRIPTION_PLANS
+SUBSCRIPTIONS 1 ── N PAYMENTS
 ```
 
 Authorization:
@@ -1082,48 +1116,41 @@ The following ERD represents the intended high-level relational structure.
 
 ```mermaid
 erDiagram
-
-    USERS ||--o| SELLERS : has
-    SELLERS ||--|| STORES : owns
-
+        USERS ||--o| SELLERS : has
+        SELLERS ||--o{ STORES : owns
+        USERS ||--o{ USER_ROLES : assigned
+        ROLES ||--o{ USER_ROLES : includes
     STORES ||--o{ PRODUCTS : contains
     STORES ||--o{ SERVICES : offers
     STORES ||--o{ CONTACT_CHANNELS : provides
-    STORES ||--o{ REVIEWS : receives
-
+        STORES ||--o{ REVIEWS : receives
+        STORES ||--o{ CONTACT_EVENTS : records
+        USERS o|--o{ CONTACT_EVENTS : initiates
+        CONTACT_CHANNELS ||--o{ CONTACT_EVENTS : used_for
     CATEGORIES ||--o{ PRODUCTS : categorizes
     CATEGORIES ||--o{ SERVICES : categorizes
     CATEGORIES ||--o{ CATEGORIES : contains
-
     PRODUCTS ||--o{ PRODUCT_IMAGES : has
     PRODUCTS ||--o{ OFFERS : has
-
     SERVICES ||--o{ SERVICE_IMAGES : has
-
     STORES ||--o{ STORE_LOCATIONS : has
     LOCATIONS ||--o{ STORE_LOCATIONS : used_by
-
     USERS ||--o{ FAVORITE_PRODUCTS : favorites
     PRODUCTS ||--o{ FAVORITE_PRODUCTS : favorited
-
     USERS ||--o{ FAVORITE_STORES : favorites
     STORES ||--o{ FAVORITE_STORES : favorited
-
     USERS ||--o{ FAVORITE_SERVICES : favorites
     SERVICES ||--o{ FAVORITE_SERVICES : favorited
-
-    USERS ||--o{ REVIEWS : writes
-
+        USERS ||--o{ REVIEWS : writes
+        CONTACT_EVENTS ||--o| REVIEWS : supports
     USERS ||--o{ REPORTS : creates
     USERS ||--o{ ADMIN_NOTES : writes
     USERS ||--o{ NOTIFICATIONS : receives
     USERS ||--o{ ANALYTICS_EVENTS : generates
     USERS ||--o{ AUDIT_LOGS : performs
-
-    SELLERS ||--o{ SUBSCRIPTIONS : owns
+        STORES ||--o{ SUBSCRIPTIONS : has
     SUBSCRIPTION_PLANS ||--o{ SUBSCRIPTIONS : defines
     SUBSCRIPTIONS ||--o{ PAYMENTS : contains
-
     ROLES ||--o{ ROLE_PERMISSIONS : grants
     PERMISSIONS ||--o{ ROLE_PERMISSIONS : included_in
 ```
@@ -1134,14 +1161,14 @@ erDiagram
 
 The following constraints are business-critical.
 
-## 8.1 One Store per Seller
+## 8.1 Store Ownership
 
 ```text
-sellers.user_id UNIQUE
-stores.seller_id UNIQUE
+UNIQUE(sellers.user_id)
+INDEX(stores.seller_id)
 ```
 
-A seller can have only one store in the MVP.
+A seller profile belongs to one user and may own multiple stores, as permitted by the PRD. Each store has its own activation, trial, and subscription lifecycle.
 
 ---
 
@@ -1179,7 +1206,18 @@ users.email UNIQUE
 
 ---
 
-## 8.5 One Review per Customer per Store
+## 8.5 Dynamic Category Constraints
+
+```text
+categories.slug UNIQUE
+INDEX(categories.parent_id, categories.sort_order, categories.status)
+```
+
+Category hierarchy and display order are stored as data; adding or reordering a category must not require an application code change.
+
+---
+
+## 8.6 One Review per Customer per Store
 
 ```text
 UNIQUE(reviews.user_id, reviews.store_id)
@@ -1189,7 +1227,7 @@ A user cannot create multiple reviews for the same store.
 
 ---
 
-## 8.6 One Favorite per User and Target
+## 8.7 One Favorite per User and Target
 
 Products:
 
@@ -1211,7 +1249,7 @@ UNIQUE(user_id, service_id)
 
 ---
 
-## 8.7 One Active Offer per Product
+## 8.8 One Active Offer per Product
 
 The MVP allows only one active offer for each product.
 
@@ -1221,7 +1259,7 @@ Database implementation may use an appropriate constraint or application-level t
 
 ---
 
-## 8.8 Offer Price Validation
+## 8.9 Offer Price Validation
 
 For an offer:
 
@@ -1233,13 +1271,28 @@ This rule must be enforced by backend validation.
 
 ---
 
-## 8.9 Review Contact Requirement
+## 8.10 Review Contact Requirement
 
 A review can only be created when the system has evidence that the customer previously initiated a contact event with the seller.
 
 This is a business rule and requires analytics/contact-event verification.
 
-It does **not** represent verified purchase.
+It does **not** represent verified purchase. A unique `contact_event_id` foreign key on `reviews` should reference the qualifying event, and the backend must verify that its user and store match the review.
+
+---
+
+## 8.11 First Activation Starts Trial
+
+The first authorized activation is the only event that starts the free trial:
+
+```text
+PENDING_ACTIVATION
+        -> admin activates
+        -> store becomes ACTIVE; activated_at is recorded
+        -> trial_started_at and trial_ends_at are recorded on the store subscription
+```
+
+Pending stores have no running trial. Activation is idempotent and must not reset either trial timestamp. Store moderation status remains independent of subscription status.
 
 ---
 
@@ -1286,21 +1339,19 @@ The system must not automatically delete seller content simply because a subscri
 
 # 10. Activation and Moderation Rules
 
-Store, product, and service creation are **not blocked by administrator approval**.
+Store activation requires an administrator action. Product and service creation do not require administrator pre-approval, though administrators may moderate them after creation.
 
 The expected flow is:
 
 ```text
-Create
-  ↓
-Immediately Active
-  ↓
-Publicly Available
-  ↓
-Admin Monitoring / Moderation
+Store created
+        -> PENDING_ACTIVATION; visible in the admin dashboard only
+        -> authorized admin activates the store
+        -> activated_at and the 60-day trial start are recorded once
+        -> public visibility is allowed while the store is active and its trial or subscription is valid
 ```
 
-Administrators may later:
+Product and service creation remains immediately active, subject to store eligibility and later moderation. Administrators may:
 
 - add notes
 - suspend
@@ -1324,16 +1375,15 @@ At minimum, administrators should receive notifications when:
 - a new product is created
 - a new service is created
 
-The notification does not block the original action.
+The notification does not activate a pending store; activation remains an explicit administrator action.
 
 For example:
 
 ```text
-Seller creates product
-        ↓
-Product becomes active
-        ↓
-Admin notification is created
+Seller creates store
+        -> store remains pending and hidden from public discovery
+        -> admin is notified
+        -> admin explicitly activates the store
 ```
 
 ---
@@ -1447,10 +1497,30 @@ created_at
 ### subscriptions
 
 ```text
-seller_id
+store_id
 plan_id
 status
+trial_started_at
+trial_ends_at
 current_period_end
+```
+
+### categories
+
+```text
+slug
+parent_id
+sort_order
+status
+```
+
+### contact_events
+
+```text
+user_id
+store_id
+contact_channel_id
+created_at
 ```
 
 ### notifications
