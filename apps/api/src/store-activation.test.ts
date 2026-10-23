@@ -9,7 +9,10 @@ import { createStoreActivationRouter } from './routes/store-activation.js';
 
 test('pending stores are hidden from public results until admin activation', () => {
   const pendingStore = { status: 'PENDING_ACTIVATION' as const };
-  const activeStore = { status: 'ACTIVE' as const, activatedAt: new Date('2026-01-01T00:00:00.000Z') };
+  const activeStore = {
+    status: 'ACTIVE' as const,
+    activatedAt: new Date('2026-01-01T00:00:00.000Z'),
+  };
 
   assert.equal(isStorePubliclyVisible(pendingStore), false);
   assert.equal(isStorePubliclyVisible(activeStore), true);
@@ -25,7 +28,10 @@ test('admin activation marks the store active and sets a 60-day trial expiry', (
   assert.equal(activated.status, 'ACTIVE');
   assert.ok(activated.activatedAt instanceof Date);
   assert.ok(activated.trialEndsAt instanceof Date);
-  assert.equal((activated.trialEndsAt as Date).getTime() - (activated.activatedAt as Date).getTime(), 60 * 24 * 60 * 60 * 1000);
+  assert.equal(
+    (activated.trialEndsAt as Date).getTime() - (activated.activatedAt as Date).getTime(),
+    60 * 24 * 60 * 60 * 1000,
+  );
 });
 
 test('repeated activation requests are idempotent and do not extend the trial', () => {
@@ -51,9 +57,7 @@ test('admin route requires an admin role and accepts activation from the server 
   });
   routeApp.use('/api/v1', createStoreActivationRouter());
 
-  const response = await request(routeApp)
-    .patch('/api/v1/admin/stores/store_123/activate')
-    .send();
+  const response = await request(routeApp).patch('/api/v1/admin/stores/store_123/activate').send();
 
   assert.equal(response.status, 200);
   assert.equal(response.body.success, true);
