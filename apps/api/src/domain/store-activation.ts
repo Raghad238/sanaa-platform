@@ -35,8 +35,7 @@ export function activateStore(store: StoreActivationState): StoreActivationState
   }
 
   const activatedAt = store.activatedAt ?? new Date();
-  const trialEndsAt =
-    store.trialEndsAt ?? new Date(activatedAt.getTime() + TRIAL_DURATION_MS);
+  const trialEndsAt = store.trialEndsAt ?? new Date(activatedAt.getTime() + TRIAL_DURATION_MS);
 
   return {
     ...store,
